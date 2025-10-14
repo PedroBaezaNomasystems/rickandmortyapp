@@ -6,6 +6,12 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		B23C0E952E9E6C9B00BAA95E /* Data in Frameworks */ = {isa = PBXBuildFile; productRef = B23C0E942E9E6C9B00BAA95E /* Data */; };
+		B23C0E982E9E6CC700BAA95E /* Domain in Frameworks */ = {isa = PBXBuildFile; productRef = B23C0E972E9E6CC700BAA95E /* Domain */; };
+		B23C0E9B2E9E6CE200BAA95E /* Presentation in Frameworks */ = {isa = PBXBuildFile; productRef = B23C0E9A2E9E6CE200BAA95E /* Presentation */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		B2C9FA862E9E657E0047BCD4 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -52,6 +58,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B23C0E982E9E6CC700BAA95E /* Domain in Frameworks */,
+				B23C0E9B2E9E6CE200BAA95E /* Presentation in Frameworks */,
+				B23C0E952E9E6C9B00BAA95E /* Data in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -112,6 +121,9 @@
 			);
 			name = RickAndMorty;
 			packageProductDependencies = (
+				B23C0E942E9E6C9B00BAA95E /* Data */,
+				B23C0E972E9E6CC700BAA95E /* Domain */,
+				B23C0E9A2E9E6CE200BAA95E /* Presentation */,
 			);
 			productName = RickAndMorty;
 			productReference = B2C9FA782E9E657D0047BCD4 /* RickAndMorty.app */;
@@ -195,6 +207,11 @@
 			);
 			mainGroup = B2C9FA6F2E9E657C0047BCD4;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				B23C0E932E9E6C9B00BAA95E /* XCLocalSwiftPackageReference "RickAndMorty/Modules/Data" */,
+				B23C0E962E9E6CC700BAA95E /* XCLocalSwiftPackageReference "RickAndMorty/Modules/Domain" */,
+				B23C0E992E9E6CE200BAA95E /* XCLocalSwiftPackageReference "RickAndMorty/Modules/Presentation" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = B2C9FA792E9E657D0047BCD4 /* Products */;
 			projectDirPath = "";
@@ -615,6 +632,36 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		B23C0E932E9E6C9B00BAA95E /* XCLocalSwiftPackageReference "RickAndMorty/Modules/Data" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = RickAndMorty/Modules/Data;
+		};
+		B23C0E962E9E6CC700BAA95E /* XCLocalSwiftPackageReference "RickAndMorty/Modules/Domain" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = RickAndMorty/Modules/Domain;
+		};
+		B23C0E992E9E6CE200BAA95E /* XCLocalSwiftPackageReference "RickAndMorty/Modules/Presentation" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = RickAndMorty/Modules/Presentation;
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		B23C0E942E9E6C9B00BAA95E /* Data */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Data;
+		};
+		B23C0E972E9E6CC700BAA95E /* Domain */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Domain;
+		};
+		B23C0E9A2E9E6CE200BAA95E /* Presentation */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Presentation;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = B2C9FA702E9E657C0047BCD4 /* Project object */;
 }
