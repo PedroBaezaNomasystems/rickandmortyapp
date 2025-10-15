@@ -7,3 +7,10 @@
 
 // Configuration settings file format documentation can be found at:
 // https://developer.apple.com/documentation/xcode/adding-a-build-configuration-file-to-your-project
+
+PROTOCOL = https:/
+BASE_URL = $(PROTOCOL)/dummyjson.com
+
+APP_NAME = Rick&Morty
+DISPLAY_NAME = Rick&Morty
+PRODUCT_BUNDLE_IDENTIFIER = com.pedrobaeza.nomasystems.RickAndMorty
