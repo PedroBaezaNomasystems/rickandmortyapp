@@ -1,5 +1,5 @@
 //
-//  CharacterViewModel.swift
+//  CharacterListViewModel.swift
 //  Presentation
 //
 //  Created by Pedro Juan Baeza Gómez on 15/10/25.
@@ -10,36 +10,39 @@ import Domain
 import Factory
 
 @MainActor
-public class CharacterDetailViewModel: ObservableObject {
+public class CharacterListViewModel: ObservableObject {
     
     @Published public var isError = false
     @Published public var isLoading = false
-    @Published public var character: CharacterEntity? = nil
+    @Published public var characters: [CharacterEntity] = []
     
     private var router: Routing?
-    private var characterId: String?
     
     @Injected(\.getCharacterUseCase)
     private var getCharacterUseCase: (any GetCharacterUseCase)!
     
-    public init(router: Routing?, characterId: String?) {
+    public init(router: Routing?) {
         
         self.router = router
-        self.characterId = characterId
     }
     
     public func onAppear() async {
         
         isLoading = true
         
-        let result = await getCharacterUseCase.execute(data: characterId ?? "0")
+        let result = await getCharacterUseCase.execute(data: "2")
         switch result {
-        case .success(let response):
-            character = response
+        case .success:
+            isError = false
         case .failure:
             isError = true
         }
         
         isLoading = false
+    }
+    
+    public func onClickOnCharacter(index: Int) {
+        
+        router?.navigate(to: .character("1"))
     }
 }

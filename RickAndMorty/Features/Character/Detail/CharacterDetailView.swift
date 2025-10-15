@@ -9,9 +9,10 @@ import SwiftUI
 import Presentation
 
 struct CharacterDetailView: View {
+    
     @StateObject var viewModel: CharacterDetailViewModel
     
-    init(router: Routing? = nil, characterId: String? = nil) {
+    init(router: Routing? = nil, characterId: String = "1") {
         
         _viewModel = StateObject(wrappedValue: CharacterDetailViewModel(router: router, characterId: characterId))
     }
@@ -20,7 +21,7 @@ struct CharacterDetailView: View {
         
         ZStack {
             
-            Text("Hello, World!")
+            Text("Hello Character Detail View, World!")
             
             if viewModel.isLoading {
                 

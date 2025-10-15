@@ -19,11 +19,11 @@ struct RickAndMortyApp: App {
         WindowGroup {
             NavigationStack(path: $router.navPath) {
                 
-                CharacterDetailView()
+                CharacterListView(router: router)
                     .navigationDestination(for: Destination.self) { destination in
                         switch destination {
                         case .list:
-                            CharacterDetailView()
+                            CharacterListView(router: router)
                         case let .character(characterId):
                             CharacterDetailView(router: router, characterId: characterId)
                         }
