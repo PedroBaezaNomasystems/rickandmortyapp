@@ -221,9 +221,8 @@
 			mainGroup = B2C9FA6F2E9E657C0047BCD4;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				B23C0E932E9E6C9B00BAA95E /* XCLocalSwiftPackageReference "RickAndMorty/Modules/Data" */,
-				B23C0E962E9E6CC700BAA95E /* XCLocalSwiftPackageReference "RickAndMorty/Modules/Domain" */,
-				B23C0E992E9E6CE200BAA95E /* XCLocalSwiftPackageReference "RickAndMorty/Modules/Presentation" */,
+				B204EE3E2E9FADC00029B052 /* XCRemoteSwiftPackageReference "Factory" */,
+				B204EE3F2E9FB2BA0029B052 /* XCRemoteSwiftPackageReference "Kingfisher" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = B2C9FA792E9E657D0047BCD4 /* Products */;
@@ -988,20 +987,24 @@
 		};
 /* End XCConfigurationList section */
 
-/* Begin XCLocalSwiftPackageReference section */
-		B23C0E932E9E6C9B00BAA95E /* XCLocalSwiftPackageReference "RickAndMorty/Modules/Data" */ = {
-			isa = XCLocalSwiftPackageReference;
-			relativePath = RickAndMorty/Modules/Data;
+/* Begin XCRemoteSwiftPackageReference section */
+		B204EE3E2E9FADC00029B052 /* XCRemoteSwiftPackageReference "Factory" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/hmlongco/Factory";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.5.3;
+			};
 		};
-		B23C0E962E9E6CC700BAA95E /* XCLocalSwiftPackageReference "RickAndMorty/Modules/Domain" */ = {
-			isa = XCLocalSwiftPackageReference;
-			relativePath = RickAndMorty/Modules/Domain;
+		B204EE3F2E9FB2BA0029B052 /* XCRemoteSwiftPackageReference "Kingfisher" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/onevcat/Kingfisher.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 8.6.0;
+			};
 		};
-		B23C0E992E9E6CE200BAA95E /* XCLocalSwiftPackageReference "RickAndMorty/Modules/Presentation" */ = {
-			isa = XCLocalSwiftPackageReference;
-			relativePath = RickAndMorty/Modules/Presentation;
-		};
-/* End XCLocalSwiftPackageReference section */
+/* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
 		B23C0E942E9E6C9B00BAA95E /* Data */ = {
