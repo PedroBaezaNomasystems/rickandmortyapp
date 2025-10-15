@@ -9,7 +9,7 @@
 // https://developer.apple.com/documentation/xcode/adding-a-build-configuration-file-to-your-project
 
 PROTOCOL = https:/
-BASE_URL = $(PROTOCOL)/dummyjson.com
+BASE_URL = $(PROTOCOL)/rickandmortyapi.com/api
 
 APP_NAME = Rick&Morty
 DISPLAY_NAME = Rick&Morty
