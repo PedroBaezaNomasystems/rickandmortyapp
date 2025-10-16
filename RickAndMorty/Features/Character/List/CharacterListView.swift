@@ -21,12 +21,22 @@ struct CharacterListView: View {
     var body: some View {        
         List {
             ForEach(viewModel.characters, id: \.id) { character in
-                VStack(alignment: .leading) {
-                    Text(character.name)
-                        .font(.headline)
-                    Text("\(character.status) - \(character.species)")
-                        .font(.subheadline)
-                        .foregroundColor(.secondary)
+                HStack {
+                    UrlImage(
+                        url: character.image,
+                        width: 60,
+                        height: 60
+                    )
+                    .clipShape(Circle())
+                    .overlay(Circle().stroke(Color.gray.opacity(0.3), lineWidth: 1))
+                    
+                    VStack(alignment: .leading) {
+                        Text(character.name)
+                            .font(.openSansBold(size: .title))
+                        
+                        Text("\(character.status) - \(character.species)")
+                            .font(.openSansRegular(size: .label))
+                    }
                 }
                 .onTapGesture {
                     viewModel.onClickOnCharacter(id: character.id)
@@ -53,15 +63,15 @@ struct CharacterListView: View {
             if viewModel.characters.isEmpty && !viewModel.isLoading {
                 ContentUnavailableView(
                     "character_list_empty_list",
-                    systemImage: "person.2.slash",
+                    systemImage: SystemIcon.persons.rawValue,
                     description: Text("common_pull_to_refresh")
                 )
             }
         }
-        .navigationTitle("character_list_title")
         .alert(isPresented: $viewModel.isError) {
             errorAlert
         }
+        .navigationTitle("character_list_title")
     }
     
     private var errorAlert: Alert {

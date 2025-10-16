@@ -10,6 +10,7 @@
 		B23C0E952E9E6C9B00BAA95E /* Data in Frameworks */ = {isa = PBXBuildFile; productRef = B23C0E942E9E6C9B00BAA95E /* Data */; };
 		B23C0E982E9E6CC700BAA95E /* Domain in Frameworks */ = {isa = PBXBuildFile; productRef = B23C0E972E9E6CC700BAA95E /* Domain */; };
 		B23C0E9B2E9E6CE200BAA95E /* Presentation in Frameworks */ = {isa = PBXBuildFile; productRef = B23C0E9A2E9E6CE200BAA95E /* Presentation */; };
+		B25B84972EA115C2006CAC5F /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = B25B84962EA115C2006CAC5F /* Kingfisher */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -71,6 +72,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B25B84972EA115C2006CAC5F /* Kingfisher in Frameworks */,
 				B23C0E982E9E6CC700BAA95E /* Domain in Frameworks */,
 				B23C0E9B2E9E6CE200BAA95E /* Presentation in Frameworks */,
 				B23C0E952E9E6C9B00BAA95E /* Data in Frameworks */,
@@ -137,6 +139,7 @@
 				B23C0E942E9E6C9B00BAA95E /* Data */,
 				B23C0E972E9E6CC700BAA95E /* Domain */,
 				B23C0E9A2E9E6CE200BAA95E /* Presentation */,
+				B25B84962EA115C2006CAC5F /* Kingfisher */,
 			);
 			productName = RickAndMorty;
 			productReference = B2C9FA782E9E657D0047BCD4 /* Rick&Morty.app */;
@@ -222,7 +225,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				B204EE3E2E9FADC00029B052 /* XCRemoteSwiftPackageReference "Factory" */,
-				B204EE3F2E9FB2BA0029B052 /* XCRemoteSwiftPackageReference "Kingfisher" */,
+				B25B84952EA115C2006CAC5F /* XCRemoteSwiftPackageReference "Kingfisher" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = B2C9FA792E9E657D0047BCD4 /* Products */;
@@ -996,7 +999,7 @@
 				minimumVersion = 2.5.3;
 			};
 		};
-		B204EE3F2E9FB2BA0029B052 /* XCRemoteSwiftPackageReference "Kingfisher" */ = {
+		B25B84952EA115C2006CAC5F /* XCRemoteSwiftPackageReference "Kingfisher" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/onevcat/Kingfisher.git";
 			requirement = {
@@ -1018,6 +1021,11 @@
 		B23C0E9A2E9E6CE200BAA95E /* Presentation */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Presentation;
+		};
+		B25B84962EA115C2006CAC5F /* Kingfisher */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B25B84952EA115C2006CAC5F /* XCRemoteSwiftPackageReference "Kingfisher" */;
+			productName = Kingfisher;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

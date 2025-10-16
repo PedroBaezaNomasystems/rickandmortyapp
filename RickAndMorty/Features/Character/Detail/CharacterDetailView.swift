@@ -18,15 +18,31 @@ struct CharacterDetailView: View {
     
     var body: some View {
         ZStack {
-            Text(viewModel.character?.name ?? "")
-                .font(.openSansBold(size: .title))
-                .padding(.all, .large)
+            if let character = viewModel.character {
+                VStack {
+                    UrlImage(
+                        url: character.image,
+                        width: 60,
+                        height: 60
+                    )
+                    .clipShape(Circle())
+                    .overlay(Circle().stroke(Color.gray.opacity(0.3), lineWidth: 1))
+                    
+                    VStack(alignment: .center) {
+                        Text(character.name)
+                            .font(.openSansBold(size: .title))
+                        
+                        Text("\(character.status) - \(character.species)")
+                            .font(.openSansRegular(size: .label))
+                    }
+                    Spacer()
+                }
+            }
             
             if viewModel.isLoading {
                 FullProgress()
             }
         }
-        .navigationTitle("character_detail_title")
         .alert(isPresented: $viewModel.isError) {
             errorAlert
         }
@@ -35,10 +51,10 @@ struct CharacterDetailView: View {
                 await viewModel.onAppear()
             }
         }
+        .navigationTitle("character_detail_title")
     }
     
     private var errorAlert: Alert {
-        
         Alert(
             title: Text("character_detail_error_title"),
             message: Text("character_detail_error_message"),
@@ -48,7 +64,6 @@ struct CharacterDetailView: View {
     }
 }
 
-#Preview {
-    
+#Preview {    
     CharacterDetailView()
 }
