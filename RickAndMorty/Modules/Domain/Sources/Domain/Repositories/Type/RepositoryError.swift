@@ -7,5 +7,6 @@
 
 public enum RepositoryError: Error {
     
+    case notFound
     case generic(String)
 }
