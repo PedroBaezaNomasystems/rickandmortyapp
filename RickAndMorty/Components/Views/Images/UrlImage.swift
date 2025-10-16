@@ -69,8 +69,7 @@ struct UrlImage: View {
             
             if showProgress && isLoading {
                 ProgressView()
-                    .tint(.blue)
-                    .scaleEffect(1.2)
+                    .tint(.customPalette.tertiary)
             }
         }
     }
