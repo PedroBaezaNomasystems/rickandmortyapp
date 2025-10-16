@@ -7,6 +7,6 @@
 
 public protocol CharacterRepository: Actor {
     
-    func getCharacters(page: Int) async throws(RepositoryError) -> ListEntity<CharacterEntity>
-    func getCharacter(characterId: String) async throws(RepositoryError) -> CharacterEntity
+    func getCharacters(page: Int) async throws -> ListEntity<CharacterEntity>
+    func getCharacter(characterId: String) async throws -> CharacterEntity
 }
