@@ -15,6 +15,17 @@ public actor CharacterRepositoryImpl: CharacterRepository {
     
     public init() {}
     
+    public func getCharacters() async throws(RepositoryError) -> ListEntity<CharacterEntity> {
+        
+        do {
+            let response: ListResponse<CharacterResponse> = try await networkService.get(resource: "character", bearer: nil)
+            return response.toDomain()
+            
+        } catch let error {
+            throw RepositoryError.generic(error.localizedDescription)
+        }
+    }
+    
     public func getCharacter(characterId: String) async throws(RepositoryError) -> CharacterEntity {
         
         do {

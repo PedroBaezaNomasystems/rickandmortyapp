@@ -33,6 +33,10 @@ extension Container: @retroactive AutoRegistering {
             CharacterRepositoryImpl()
         }
         
+        getCharactersUseCase.register {
+            GetCharactersUseCaseImpl()
+        }
+        
         getCharacterUseCase.register {
             GetCharacterUseCaseImpl()
         }

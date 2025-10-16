@@ -5,7 +5,7 @@
 //  Created by Pedro Juan Baeza Gómez on 15/10/25.
 //
 
-struct CharacterResponse: Decodable {
+struct CharacterResponse: Decodable, Sendable {
     
     let id: Int
     let name: String
@@ -18,13 +18,13 @@ struct CharacterResponse: Decodable {
     let image: String
 }
 
-struct CharacterOriginResponse: Decodable {
+struct CharacterOriginResponse: Decodable, Sendable {
     
     let name: String
     let url: String
 }
 
-struct CharacterLocationResponse: Decodable {
+struct CharacterLocationResponse: Decodable, Sendable {
     
     let name: String
     let url: String

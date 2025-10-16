@@ -7,5 +7,6 @@
 
 public protocol CharacterRepository: Actor {
     
+    func getCharacters() async throws(RepositoryError) -> ListEntity<CharacterEntity>
     func getCharacter(characterId: String) async throws(RepositoryError) -> CharacterEntity
 }

@@ -7,7 +7,7 @@
 
 import Domain
 
-extension CharacterResponse {
+extension CharacterResponse: Mappeable {
     
     func toDomain() -> CharacterEntity {
         

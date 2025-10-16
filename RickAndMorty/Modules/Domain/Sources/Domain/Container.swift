@@ -17,6 +17,10 @@ extension Container {
 
 extension Container {
     
+    public var getCharactersUseCase: Factory<(any GetCharactersUseCase)?> {
+        promised()
+    }
+    
     public var getCharacterUseCase: Factory<(any GetCharacterUseCase)?> {
         promised()
     }

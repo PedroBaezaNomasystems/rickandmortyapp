@@ -18,8 +18,8 @@ public class CharacterListViewModel: ObservableObject {
     
     private var router: Routing?
     
-    @Injected(\.getCharacterUseCase)
-    private var getCharacterUseCase: (any GetCharacterUseCase)!
+    @Injected(\.getCharactersUseCase)
+    private var getCharactersUseCase: (any GetCharactersUseCase)!
     
     public init(router: Routing?) {
         
@@ -30,10 +30,10 @@ public class CharacterListViewModel: ObservableObject {
         
         isLoading = true
         
-        let result = await getCharacterUseCase.execute(data: "2")
+        let result = await getCharactersUseCase.execute()
         switch result {
-        case .success:
-            isError = false
+        case .success(let response):
+            characters = response.results
         case .failure:
             isError = true
         }

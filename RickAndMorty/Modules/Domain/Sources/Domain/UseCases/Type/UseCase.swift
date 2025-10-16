@@ -19,3 +19,9 @@ public protocol UseCase: Actor {
     
     func execute(data: InputType) async -> Result<ResultType, UseCaseError>
 }
+
+public extension UseCase where InputType == Void {
+    func execute() async -> Result<ResultType, UseCaseError> {
+        await execute(data: ())
+    }
+}
