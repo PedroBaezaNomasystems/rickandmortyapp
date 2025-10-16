@@ -7,6 +7,7 @@
 
 public enum NetworkError: Error {
     
+    case invalidURL
     case invalidResponse
     case httpError(statusCode: Int, responseBody: String?)
     case decodingError(Error)

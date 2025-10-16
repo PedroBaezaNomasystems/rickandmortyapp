@@ -15,10 +15,11 @@ public actor CharacterRepositoryImpl: CharacterRepository {
     
     public init() {}
     
-    public func getCharacters() async throws(RepositoryError) -> ListEntity<CharacterEntity> {
+    public func getCharacters(page: Int) async throws(RepositoryError) -> ListEntity<CharacterEntity> {
         
         do {
-            let response: ListResponse<CharacterResponse> = try await networkService.get(resource: "character", bearer: nil)
+            let params: [String: String]? = ["page": "\(page)"]
+            let response: ListResponse<CharacterResponse> = try await networkService.get(resource: "character", params: params, bearer: nil)
             return response.toDomain()
             
         } catch let error {
@@ -29,7 +30,7 @@ public actor CharacterRepositoryImpl: CharacterRepository {
     public func getCharacter(characterId: String) async throws(RepositoryError) -> CharacterEntity {
         
         do {
-            let response: CharacterResponse = try await networkService.get(resource: "character/\(characterId)", bearer: nil)
+            let response: CharacterResponse = try await networkService.get(resource: "character/\(characterId)", params: nil, bearer: nil)
             return response.toDomain()
             
         } catch let error {

@@ -9,7 +9,7 @@ import Foundation
 
 public protocol NetworkService: Actor {
     
-    func get<T: Decodable>(resource: String, bearer: String?) async throws -> T
+    func get<T: Decodable>(resource: String, params: [String: String]?, bearer: String?) async throws -> T
     func post<T: Decodable, U: Encodable>(resource: String, body: U, bearer: String?) async throws -> T
 }
 
@@ -22,9 +22,24 @@ public actor NetworkServiceImpl: NetworkService {
         self.baseUrl = baseUrl
     }
     
-    public func get<T: Decodable>(resource: String, bearer: String?) async throws -> T {
+    public func get<T: Decodable>(resource: String, params: [String: String]?, bearer: String?) async throws -> T {
         
-        let url = baseUrl.appendingPathComponent(resource)
+        let baseURLWithResource = baseUrl.appendingPathComponent(resource)
+            
+        guard var urlComponents = URLComponents(url: baseURLWithResource, resolvingAgainstBaseURL: false) else {
+            throw NetworkError.invalidURL
+        }
+        
+        if let params = params, !params.isEmpty {
+            urlComponents.queryItems = params.map { key, value in
+                URLQueryItem(name: key, value: value)
+            }
+        }
+        
+        guard let url = urlComponents.url else {
+            throw NetworkError.invalidURL
+        }
+        
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
         
