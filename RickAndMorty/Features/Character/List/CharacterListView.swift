@@ -52,13 +52,13 @@ struct CharacterListView: View {
         .overlay {
             if viewModel.characters.isEmpty && !viewModel.isLoading {
                 ContentUnavailableView(
-                    "No Characters",
+                    "character_list_empty_list",
                     systemImage: "person.2.slash",
-                    description: Text("Pull to refresh")
+                    description: Text("common_pull_to_refresh")
                 )
             }
         }
-        .navigationTitle("Characters")
+        .navigationTitle("character_list_title")
         .alert(isPresented: $viewModel.isError) {
             errorAlert
         }
@@ -67,9 +67,9 @@ struct CharacterListView: View {
     private var errorAlert: Alert {
         
         Alert(
-            title: Text("error_title"),
-            message: Text("error_message"),
-            primaryButton: .default(Text("OK")),
+            title: Text("character_list_error_title"),
+            message: Text("character_list_error_message"),
+            primaryButton: .default(Text("common_ok")),
             secondaryButton: .cancel()
         )
     }
