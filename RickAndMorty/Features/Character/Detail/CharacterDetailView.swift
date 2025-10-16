@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Domain
 import Presentation
 
 struct CharacterDetailView: View {
@@ -21,13 +22,14 @@ struct CharacterDetailView: View {
         
         ZStack {
             
-            Text("Hello Character Detail View, World!")
+            Text(viewModel.character?.name ?? "")
             
             if viewModel.isLoading {
                 
                 FullProgress()
             }
         }
+        .navigationTitle("Character")
         .alert(isPresented: $viewModel.isError) {
             errorAlert
         }
@@ -41,8 +43,8 @@ struct CharacterDetailView: View {
     private var errorAlert: Alert {
         
         Alert(
-            title: Text("login_title"),
-            message: Text("login_error"),
+            title: Text("error_title"),
+            message: Text("error_message"),
             primaryButton: .default(Text("OK")),
             secondaryButton: .cancel()
         )

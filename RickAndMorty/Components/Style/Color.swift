@@ -9,10 +9,13 @@ import SwiftUI
 
 struct CustomPalette {
     
+    static let error = Color("Error")
+    static let neutral = Color("Neutral")
     static let primary = Color("Primary")
     static let secondary = Color("Secondary")
-    static let neutral = Color("Neutral")
-    static let error = Color("Error")
+    static let tertiary = Color("Tertiary")
+    static let quaternary = Color("Quaternary")
+    static let quinary = Color("Quinary")
 }
 
 extension Color {

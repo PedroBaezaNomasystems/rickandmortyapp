@@ -1,30 +1,30 @@
 //
-//  FullProgress.swift
+//  ListProgress.swift
 //  RickAndMorty
 //
-//  Created by Pedro Juan Baeza Gómez on 15/10/25.
+//  Created by Pedro Juan Baeza Gómez on 16/10/25.
 //
 
 import SwiftUI
 
-struct FullProgress: View {
+struct ListProgress: View {
     
     var body: some View {
-
-        ZStack {
+        
+        HStack {
             
-            Rectangle()
-                .mask(Color.black.opacity(0.2))
+            Spacer()
             
             ProgressView()
                 .controlSize(.large)
                 .tint(.customPalette.tertiary)
+            
+            Spacer()
         }
-        .ignoresSafeArea()
     }
 }
 
 #Preview {
     
-    FullProgress()
+    ListProgress()
 }

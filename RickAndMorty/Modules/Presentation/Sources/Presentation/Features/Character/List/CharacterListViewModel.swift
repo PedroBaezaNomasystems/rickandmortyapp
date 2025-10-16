@@ -28,19 +28,25 @@ public class CharacterListViewModel: ObservableObject {
         self.router = router
     }
     
-    public func onAppear() async {
+    public func onRefresh() async {
         
         await fetchFirstPage()
     }
     
-    public func onClickOnCharacter(index: Int) {
+    public func onRequestMoreCharacters() async {
         
-        router?.navigate(to: .character("1"))
+        await fetchNextPage()
     }
     
-    // MARK: - PRIVATE FUNC
+    public func onClickOnCharacter(id: Int) {
+        
+        router?.navigate(to: .character("\(id)"))
+    }
+}
+
+private extension CharacterListViewModel {
     
-    private func fetchFirstPage() async {
+    func fetchFirstPage() async {
         
         totalPages = 1
         currentPage = 1
@@ -49,7 +55,7 @@ public class CharacterListViewModel: ObservableObject {
         await fetchPage()
     }
     
-    private func fetchNextPage() async {
+    func fetchNextPage() async {
         
         currentPage += 1
         
@@ -59,7 +65,7 @@ public class CharacterListViewModel: ObservableObject {
         }
     }
     
-    private func fetchPage() async {
+    func fetchPage() async {
         
         isLoading = true
         
@@ -67,7 +73,7 @@ public class CharacterListViewModel: ObservableObject {
         switch result {
         case .success(let response):
             totalPages = response.pages
-            characters = response.results
+            characters.append(contentsOf: response.results)
         case .failure:
             isError = true
         }
