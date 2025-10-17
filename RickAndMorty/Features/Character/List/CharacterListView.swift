@@ -13,41 +13,50 @@ struct CharacterListView: View {
     
     @StateObject var viewModel: CharacterListViewModel
     
-    init(router: Routing? = nil) {
-        
+    init(router: Routing? = nil) {        
         _viewModel = StateObject(wrappedValue: CharacterListViewModel(router: router))
     }
     
     var body: some View {
-        
-        List {
-            
-            ForEach(viewModel.characters, id: \.id) { character in
+        VStack {
+            List {
+                ForEach(viewModel.characters, id: \.id) { character in
+                    CharacterListViewItem(character: character)
+                }
                 
-                CharacterListViewItem(character: character)
+                if !viewModel.isLoading && !viewModel.characters.isEmpty {
+                    ListProgress()
+                }
             }
-            
-            if !viewModel.isLoading && !viewModel.characters.isEmpty {
-                
-                ListProgress()
+            .searchable(
+                text: $viewModel.search,
+                placement: .navigationBarDrawer(displayMode: .always),
+                prompt: "character_list_search_placeholder"
+            )
+            .onSubmit(of: .search) {
+                Task {
+                    await viewModel.onRefresh()
+                }
             }
-        }
-        .refreshable {
-            
-            Task {
-                
-                await viewModel.onRefresh()
+            .onChange(of: viewModel.search) { oldValue, newValue in
+                if newValue.isEmpty {
+                    Task {
+                        await viewModel.onRefresh()
+                    }
+                }
             }
-        }
-        .overlay {
-            
-            if viewModel.characters.isEmpty && !viewModel.isLoading {
-                
-                CharacterListViewEmpty
+            .refreshable {
+                Task {
+                    await viewModel.onRefresh()
+                }
+            }
+            .overlay {
+                if viewModel.characters.isEmpty && !viewModel.isLoading {
+                    CharacterListViewEmpty
+                }
             }
         }
         .alert(isPresented: $viewModel.isError) {
-            
             CharacterListViewError
         }
         .navigationTitle("character_list_title")

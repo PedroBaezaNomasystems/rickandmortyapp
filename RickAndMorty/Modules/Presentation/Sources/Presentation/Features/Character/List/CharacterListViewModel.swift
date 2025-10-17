@@ -14,6 +14,7 @@ public class CharacterListViewModel: ObservableObject {
     
     @Published public var isError = false
     @Published public var isLoading = false
+    @Published public var search: String = ""
     @Published public var totalPages: Int = 1
     @Published public var currentPage: Int = 1
     @Published public var characters: [CharacterEntity] = []
@@ -69,7 +70,7 @@ private extension CharacterListViewModel {
         
         isLoading = true
         
-        let result = await getCharactersUseCase.execute(data: currentPage)
+        let result = await getCharactersUseCase.execute(data: (page: currentPage, search: search))
         switch result {
         case .success(let response):
             totalPages = response.pages

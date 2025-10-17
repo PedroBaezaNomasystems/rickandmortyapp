@@ -32,7 +32,7 @@ public actor CharacterRepositoryMock: CharacterRepository, Sendable {
         self.mockCharacterListResponse = response
     }
     
-    public func getCharacters(page: Int) async throws -> ListEntity<CharacterEntity> {
+    public func getCharacters(page: Int, search: String) async throws -> ListEntity<CharacterEntity> {
         if let error = mockError {
             throw error
         }

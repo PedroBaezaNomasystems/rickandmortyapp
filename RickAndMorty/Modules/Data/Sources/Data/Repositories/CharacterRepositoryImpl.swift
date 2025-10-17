@@ -15,10 +15,13 @@ public actor CharacterRepositoryImpl: CharacterRepository {
     
     public init() {}
     
-    public func getCharacters(page: Int) async throws(RepositoryError) -> ListEntity<CharacterEntity> {
+    public func getCharacters(page: Int, search: String) async throws(RepositoryError) -> ListEntity<CharacterEntity> {
         
         do {
-            let params: [String: String]? = ["page": "\(page)"]
+            let params: [String: String]? = [
+                "page": "\(page)",
+                "name": "\(search)"
+            ]
             let response: ListResponse<CharacterResponse> = try await networkService.get(resource: "character", params: params, bearer: nil)
             return response.toDomain()
             

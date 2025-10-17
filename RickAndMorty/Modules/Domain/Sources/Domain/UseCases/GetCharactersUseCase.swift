@@ -10,7 +10,7 @@ import Factory
 
 public protocol GetCharactersUseCase: UseCase where
 
-    InputType == Int,
+    InputType == (page: Int, search: String),
     ResultType == ListEntity<CharacterEntity> {
 }
 
@@ -21,10 +21,10 @@ public actor GetCharactersUseCaseImpl: GetCharactersUseCase {
     
     public init() {}
     
-    public func execute(data: Int) async -> Result<ListEntity<CharacterEntity>, UseCaseError> {
+    public func execute(data: (page: Int, search: String)) async -> Result<ListEntity<CharacterEntity>, UseCaseError> {
         
         do {
-            let characters = try await repository.getCharacters(page: data)
+            let characters = try await repository.getCharacters(page: data.page, search: data.search)
             return .success(characters)
             
         } catch {

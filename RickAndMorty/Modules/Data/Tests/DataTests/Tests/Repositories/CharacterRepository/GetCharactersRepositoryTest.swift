@@ -40,7 +40,7 @@ final class GetCharactersRepositoryTest: XCTestCase {
         await service.setMockGetResponse(expected)
         
         do {
-            let result = try await sut.getCharacters(page: 1)
+            let result = try await sut.getCharacters(page: 1, search: "")
             CharacterResponseAssert.assertCharacterList(result, equals: expected.toDomain())
         } catch {
             XCTFail("Expected success but got error: \(error)")
@@ -51,7 +51,7 @@ final class GetCharactersRepositoryTest: XCTestCase {
         await service.setMockError(NetworkError.invalidURL)
         
         do {
-            let result = try await sut.getCharacters(page: 1)
+            let result = try await sut.getCharacters(page: 1, search: "")
             XCTFail("Expected failure but got success: \(result)")
         } catch {
             switch error {
