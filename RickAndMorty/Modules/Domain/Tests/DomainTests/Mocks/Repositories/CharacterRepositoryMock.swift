@@ -21,15 +21,15 @@ public actor CharacterRepositoryMock: CharacterRepository, Sendable {
     }
     
     public func setMockResponse(_ response: CharacterEntity) {
+        self.mockError = nil
         self.mockCharacterResponse = response
         self.mockCharacterListResponse = nil
-        self.mockError = nil
     }
     
     public func setMockResponse(_ response: ListEntity<CharacterEntity>) {
-        self.mockCharacterListResponse = response
-        self.mockCharacterResponse = nil
         self.mockError = nil
+        self.mockCharacterResponse = nil
+        self.mockCharacterListResponse = response
     }
     
     public func getCharacters(page: Int) async throws -> ListEntity<CharacterEntity> {
@@ -39,7 +39,8 @@ public actor CharacterRepositoryMock: CharacterRepository, Sendable {
         if let response = mockCharacterListResponse {
             return response
         }
-        throw RepositoryErrorMock.responseNotSet
+        
+        fatalError("CharacterRepositoryMock not configured. Call setMockError or setMockResponse first.")
     }
     
     public func getCharacter(characterId: String) async throws -> CharacterEntity {
@@ -49,6 +50,7 @@ public actor CharacterRepositoryMock: CharacterRepository, Sendable {
         if let response = mockCharacterResponse {
             return response
         }
-        throw RepositoryErrorMock.responseNotSet
+        
+        fatalError("CharacterRepositoryMock not configured. Call setMockError or setMockResponse first.")
     }
 }

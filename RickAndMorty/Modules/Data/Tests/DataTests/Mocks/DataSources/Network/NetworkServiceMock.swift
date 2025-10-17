@@ -38,7 +38,8 @@ public actor NetworkServiceMock: NetworkService, Sendable {
         if let response = mockGetResponse as? T {
             return response
         }
-        throw NetworkErrorMock.responseNotSet
+        
+        fatalError("NetworkServiceMock not configured. Call setMockError, setMockGetResponse or setMockPostResponse first.")
     }
     
     public func post<T, U>(resource: String, body: U, bearer: String?) async throws -> T where T : Decodable, U : Encodable {
@@ -48,6 +49,7 @@ public actor NetworkServiceMock: NetworkService, Sendable {
         if let response = mockPostResponse as? T {
             return response
         }
-        throw NetworkErrorMock.responseNotSet
+        
+        fatalError("NetworkServiceMock not configured. Call setMockError, setMockGetResponse or setMockPostResponse first.")
     }
 }
