@@ -1,6 +1,6 @@
 //
-//  CharacterResponseAssert.swift
-//  Data
+//  CharacterEntityAssert.swift
+//  Domain
 //
 //  Created by Pedro Juan Baeza Gómez on 17/10/25.
 //
@@ -8,7 +8,7 @@
 import XCTest
 import Domain
 
-final class CharacterResponseAssert {
+final class CharacterEntityAssert {
     
     static func assertCharacter(_ character: CharacterEntity, equals expected: CharacterEntity, file: StaticString = #filePath, line: UInt = #line) {
         XCTAssertEqual(character.id, expected.id, file: file, line: line)
