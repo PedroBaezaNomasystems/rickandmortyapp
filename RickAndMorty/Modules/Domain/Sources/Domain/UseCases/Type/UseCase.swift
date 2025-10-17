@@ -7,7 +7,7 @@
 
 import Foundation
 
-public enum UseCaseError: Error {
+public enum UseCaseError: Error, Equatable {
     
     case generic
 }

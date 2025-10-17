@@ -9,67 +9,62 @@ import XCTest
 import Factory
 @testable import Domain
 
-final class GetCharacterUseCaseTest: XCTestCase {
+final class GetCharacterUseCaseTests: XCTestCase {
     
-    private var mock: CharacterRepositoryMock!
+    private var repository: CharacterRepositoryMock!
     private var sut: GetCharacterUseCaseImpl!
     
     override func setUp() {
         super.setUp()
         
-        let mockLocal = CharacterRepositoryMock()
-        mock = mockLocal
+        let mock = CharacterRepositoryMock()
+        repository = mock
         
         Container.shared.manager.push()
-        Container.shared.characterRepository.register { mockLocal }
+        Container.shared.characterRepository.register { mock }
+        
         sut = GetCharacterUseCaseImpl()
     }
     
     override func tearDown() {
-        mock = nil
         sut = nil
+        repository = nil
         
         Container.shared.manager.pop()
         super.tearDown()
     }
     
-    func testGetCharactersSuccess() async {
-        let mockResponse = getMockResponse()
-        await mock.setMockResponse(mockResponse)
+    func test_execute_returnsCharacter_whenRepositorySucceeds() async {
+        let expected = makeCharacterEntity()
+        await repository.setMockResponse(expected)
         
-        let characterId = "0"
-        let result = await sut.execute(data: characterId)
+        let result = await sut.execute(data: "0")
+        
         switch result {
-        case .success(let response):
-            XCTAssertEqual(response.id, 0)
-            XCTAssertEqual(response.name, "Name")
-            XCTAssertEqual(response.status, "Status")
-            XCTAssertEqual(response.species, "Species")
-            XCTAssertEqual(response.type, "Type")
-            XCTAssertEqual(response.gender, "Gender")
-            XCTAssertEqual(response.origin, "OriginName")
-            XCTAssertEqual(response.location, "LocationName")
-            XCTAssertEqual(response.image, "Image")
-        case .failure:
-            XCTFail("Expected success but got error")
+        case .success(let character):
+            assertCharacter(character, equals: expected)
+        case .failure(let error):
+            XCTFail("Expected success but got failure: \(error)")
         }
     }
     
-    func testGetCharactersError() async {
-        await mock.setMockError(RepositoryError.notFound)
+    func test_execute_returnsError_whenRepositoryFails() async {
+        await repository.setMockError(RepositoryError.notFound)
         
-        let characterId = "0"
-        let result = await sut.execute(data: characterId)
+        let result = await sut.execute(data: "0")
+        
         switch result {
-        case .success(let response):
-            XCTFail("Expected error to be thrown but got success with: \(response)")
-        case .failure:
-            XCTAssertTrue(true, "Error description should not be empty")
+        case .success(let character):
+            XCTFail("Expected failure but got success: \(character)")
+        case .failure(let error):
+            XCTAssertEqual(error, .generic)
         }
     }
     
-    private func getMockResponse() -> CharacterEntity {
-        return CharacterEntity(
+    // MARK: - Helpers
+    
+    private func makeCharacterEntity() -> CharacterEntity {
+        CharacterEntity(
             id: 0,
             name: "Name",
             status: "Status",
@@ -80,5 +75,17 @@ final class GetCharacterUseCaseTest: XCTestCase {
             location: "LocationName",
             image: "Image"
         )
+    }
+    
+    private func assertCharacter(_ character: CharacterEntity, equals expected: CharacterEntity, file: StaticString = #filePath, line: UInt = #line) {
+        XCTAssertEqual(character.id, expected.id, file: file, line: line)
+        XCTAssertEqual(character.name, expected.name, file: file, line: line)
+        XCTAssertEqual(character.status, expected.status, file: file, line: line)
+        XCTAssertEqual(character.species, expected.species, file: file, line: line)
+        XCTAssertEqual(character.type, expected.type, file: file, line: line)
+        XCTAssertEqual(character.gender, expected.gender, file: file, line: line)
+        XCTAssertEqual(character.origin, expected.origin, file: file, line: line)
+        XCTAssertEqual(character.location, expected.location, file: file, line: line)
+        XCTAssertEqual(character.image, expected.image, file: file, line: line)
     }
 }

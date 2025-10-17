@@ -9,68 +9,62 @@ import XCTest
 import Factory
 @testable import Domain
 
-final class GetCharactersUseCaseTest: XCTestCase {
+final class GetCharactersUseCaseTests: XCTestCase {
     
-    private var mock: CharacterRepositoryMock!
+    private var repository: CharacterRepositoryMock!
     private var sut: GetCharactersUseCaseImpl!
     
     override func setUp() {
         super.setUp()
         
-        let mockLocal = CharacterRepositoryMock()
-        mock = mockLocal
+        let mock = CharacterRepositoryMock()
+        repository = mock
         
         Container.shared.manager.push()
-        Container.shared.characterRepository.register { mockLocal }
+        Container.shared.characterRepository.register { mock }
+        
         sut = GetCharactersUseCaseImpl()
     }
     
     override func tearDown() {
-        mock = nil
         sut = nil
+        repository = nil
         
         Container.shared.manager.pop()
         super.tearDown()
     }
     
-    func testGetCharactersSuccess() async {
-        let mockResponse = getMockResponse()
-        await mock.setMockResponse(mockResponse)
+    func test_execute_returnsCharacters_whenRepositorySucceeds() async {
+        let expected = makeListEntity()
+        await repository.setMockResponse(expected)
         
-        let page = 0
-        let result = await sut.execute(data: page)
+        let result = await sut.execute(data: 0)
+        
         switch result {
         case .success(let response):
-            XCTAssertEqual(response.results.count, 1)
-            XCTAssertEqual(response.results[0].id, 0)
-            XCTAssertEqual(response.results[0].name, "Name")
-            XCTAssertEqual(response.results[0].status, "Status")
-            XCTAssertEqual(response.results[0].species, "Species")
-            XCTAssertEqual(response.results[0].type, "Type")
-            XCTAssertEqual(response.results[0].gender, "Gender")
-            XCTAssertEqual(response.results[0].origin, "OriginName")
-            XCTAssertEqual(response.results[0].location, "LocationName")
-            XCTAssertEqual(response.results[0].image, "Image")
-        case .failure:
-            XCTFail("Expected success but got error")
+            assertCharacterList(response, equals: expected)
+        case .failure(let error):
+            XCTFail("Expected success but got failure: \(error)")
         }
     }
     
-    func testGetCharactersError() async {
-        await mock.setMockError(RepositoryError.notFound)
+    func test_execute_returnsError_whenRepositoryFails() async {
+        await repository.setMockError(.notFound)
         
-        let page = 0
-        let result = await sut.execute(data: page)
+        let result = await sut.execute(data: 0)
+        
         switch result {
         case .success(let response):
-            XCTFail("Expected error to be thrown but got success with: \(response)")
-        case .failure:
-            XCTAssertTrue(true, "Error description should not be empty")
+            XCTFail("Expected failure but got success: \(response)")
+        case .failure(let error):
+            XCTAssertEqual(error, .generic)
         }
     }
     
-    private func getMockResponse() -> ListEntity<CharacterEntity> {
-        let mockItemResponse = CharacterEntity(
+    // MARK: - Helpers
+    
+    private func makeListEntity() -> ListEntity<CharacterEntity> {
+        let character = CharacterEntity(
             id: 0,
             name: "Name",
             status: "Status",
@@ -87,7 +81,40 @@ final class GetCharactersUseCaseTest: XCTestCase {
             pages: 1,
             next: nil,
             previous: nil,
-            results: [mockItemResponse]
+            results: [character]
         )
+    }
+    
+    private func assertCharacterList(
+        _ actual: ListEntity<CharacterEntity>,
+        equals expected: ListEntity<CharacterEntity>,
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) {
+        XCTAssertEqual(actual.count, expected.count, file: file, line: line)
+        XCTAssertEqual(actual.pages, expected.pages, file: file, line: line)
+        XCTAssertEqual(actual.results.count, expected.results.count, file: file, line: line)
+        
+        if let actualCharacter = actual.results.first,
+           let expectedCharacter = expected.results.first {
+            assertCharacter(actualCharacter, equals: expectedCharacter, file: file, line: line)
+        }
+    }
+    
+    private func assertCharacter(
+        _ actual: CharacterEntity,
+        equals expected: CharacterEntity,
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) {
+        XCTAssertEqual(actual.id, expected.id, file: file, line: line)
+        XCTAssertEqual(actual.name, expected.name, file: file, line: line)
+        XCTAssertEqual(actual.status, expected.status, file: file, line: line)
+        XCTAssertEqual(actual.species, expected.species, file: file, line: line)
+        XCTAssertEqual(actual.type, expected.type, file: file, line: line)
+        XCTAssertEqual(actual.gender, expected.gender, file: file, line: line)
+        XCTAssertEqual(actual.origin, expected.origin, file: file, line: line)
+        XCTAssertEqual(actual.location, expected.location, file: file, line: line)
+        XCTAssertEqual(actual.image, expected.image, file: file, line: line)
     }
 }
