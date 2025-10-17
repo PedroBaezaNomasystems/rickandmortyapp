@@ -14,32 +14,24 @@ struct CharacterDetailView: View {
     @StateObject var viewModel: CharacterDetailViewModel
     
     init(router: Routing? = nil, characterId: String = "1") {
-        
         _viewModel = StateObject(wrappedValue: CharacterDetailViewModel(router: router, characterId: characterId))
     }
     
     var body: some View {
-        
         ZStack {
-            
             if let character = viewModel.character {
-                
                 CharacterDetailViewItem(character: character)
             }
             
             if viewModel.isLoading {
-                
                 FullProgress()
             }
         }
         .alert(isPresented: $viewModel.isError) {
-            
             CharacterDetailViewError
         }
         .onAppear {
-            
             Task {
-                
                 await viewModel.onAppear()
             }
         }
@@ -48,32 +40,48 @@ struct CharacterDetailView: View {
     
     @ViewBuilder
     private func CharacterDetailViewItem(character: CharacterEntity) -> some View {
-        
+        ScrollView {
+            VStack {
+                UrlImage(url: character.image)
+                    .clipShape(RoundedRectangle(cornerRadius: 10))
+                    .padding(.top, .small)
+                
+                VStack(alignment: .center, spacing: .small) {
+                    Text(character.name)
+                        .font(.openSansBold(size: .headline))
+                        .padding(.vertical, .small)
+                    
+                    VStack {
+                        CharacterDetailViewElement("character_detail_status_field", character.status)
+                        CharacterDetailViewElement("character_detail_specie_field", character.species)
+                        CharacterDetailViewElement("character_detail_gender_field", character.gender)
+                        CharacterDetailViewElement("character_detail_origin_field", character.origin)
+                        CharacterDetailViewElement("character_detail_location_field", character.location)
+                    }
+                }
+            }            
+            .padding(.horizontal, .large)
+        }
+    }
+    
+    @ViewBuilder
+    private func CharacterDetailViewElement(_ key: String, _ value: String) -> some View {
         VStack {
-            
-            UrlImage(
-                url: character.image,
-                width: 60,
-                height: 60
-            )
-            .clipShape(Circle())
-            .overlay(Circle().stroke(Color.gray.opacity(0.3), lineWidth: 1))
-            
-            VStack(alignment: .center) {
+            HStack(alignment: .center) {
+                Text(LocalizedStringKey(key))
+                    .font(.openSansRegular(size: .title))
                 
-                Text(character.name)
-                    .font(.openSansBold(size: .title))
+                Spacer()
                 
-                Text("\(character.status) - \(character.species)")
-                    .font(.openSansRegular(size: .label))
+                Text(value)
+                    .font(.openSansLight(size: .title))
             }
             
-            Spacer()
+            Divider()
         }
     }
     
     private var CharacterDetailViewError: Alert {
-        
         Alert(
             title: Text("character_detail_error_title"),
             message: Text("character_detail_error_message"),
@@ -84,6 +92,5 @@ struct CharacterDetailView: View {
 }
 
 #Preview {
-    
     CharacterDetailView()
 }

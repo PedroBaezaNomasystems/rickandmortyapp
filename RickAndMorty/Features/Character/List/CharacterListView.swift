@@ -30,7 +30,7 @@ struct CharacterListView: View {
             }
             .searchable(
                 text: $viewModel.search,
-                placement: .navigationBarDrawer(displayMode: .automatic),
+                placement: .navigationBarDrawer,
                 prompt: "character_list_search_placeholder"
             )
             .onSubmit(of: .search) {
