@@ -19,7 +19,7 @@ public actor GetCharacterUseCaseMock: GetCharacterUseCase, Sendable {
     
     public func setMockResponse(_ response: CharacterEntity) {
         self.mockError = nil
-        self.mockResponse = nil
+        self.mockResponse = response
     }
     
     public func execute(data: String) async -> Result<CharacterEntity, UseCaseError> {
