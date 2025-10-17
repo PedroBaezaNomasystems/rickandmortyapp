@@ -30,7 +30,7 @@ struct CharacterListView: View {
             }
             .searchable(
                 text: $viewModel.search,
-                placement: .navigationBarDrawer(displayMode: .always),
+                placement: .navigationBarDrawer(displayMode: .automatic),
                 prompt: "character_list_search_placeholder"
             )
             .onSubmit(of: .search) {
@@ -64,9 +64,7 @@ struct CharacterListView: View {
     
     @ViewBuilder
     private func CharacterListViewItem(character: CharacterEntity) -> some View {
-        
         HStack {
-            
             UrlImage(
                 url: character.image,
                 width: 60,
@@ -76,7 +74,6 @@ struct CharacterListView: View {
             .overlay(Circle().stroke(Color.gray.opacity(0.3), lineWidth: 1))
             
             VStack(alignment: .leading) {
-                
                 Text(character.name)
                     .font(.openSansBold(size: .title))
                 
@@ -85,15 +82,11 @@ struct CharacterListView: View {
             }
         }
         .onTapGesture {
-            
             viewModel.onClickOnCharacter(id: character.id)
         }
         .onAppear {
-            
             if character.id == viewModel.characters.last?.id {
-                
                 Task {
-                    
                     await viewModel.onRequestMoreCharacters()
                 }
             }
@@ -110,7 +103,6 @@ struct CharacterListView: View {
     }
     
     private var CharacterListViewError: Alert {
-        
         Alert(
             title: Text("character_list_error_title"),
             message: Text("character_list_error_message"),
@@ -121,6 +113,5 @@ struct CharacterListView: View {
 }
 
 #Preview {
-    
     CharacterListView()
 }
