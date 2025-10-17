@@ -5,16 +5,36 @@
 //  Created by Pedro Juan Baeza Gómez on 16/10/25.
 //
 
-struct ListResponse<T: Decodable & Sendable>: Decodable, Sendable {
+public struct ListResponse<T: Decodable & Sendable>: Decodable, Sendable {
     
-    let info: ListInfoResponse
-    let results: [T]
+    public let info: ListInfoResponse
+    public let results: [T]
+    
+    public init(
+        info: ListInfoResponse,
+        results: [T]
+    ) {
+        self.info = info
+        self.results = results
+    }
 }
 
-struct ListInfoResponse: Decodable, Sendable {
+public struct ListInfoResponse: Decodable, Sendable {
     
-    let count: Int
-    let pages: Int
-    let next: String?
-    let previous: String?
+    public let count: Int
+    public let pages: Int
+    public let next: String?
+    public let previous: String?
+    
+    public init(
+        count: Int,
+        pages: Int,
+        next: String?,
+        previous: String?
+    ) {
+        self.count = count
+        self.pages = pages
+        self.next = next
+        self.previous = previous
+    }
 }

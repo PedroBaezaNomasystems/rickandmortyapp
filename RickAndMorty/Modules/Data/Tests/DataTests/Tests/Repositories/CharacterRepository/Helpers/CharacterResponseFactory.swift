@@ -5,7 +5,7 @@
 //  Created by Pedro Juan Baeza Gómez on 17/10/25.
 //
 
-@testable import Data
+import Data
 
 final class CharacterResponseFactory {
     

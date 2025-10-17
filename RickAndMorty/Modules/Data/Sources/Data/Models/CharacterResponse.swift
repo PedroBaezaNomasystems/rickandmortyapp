@@ -5,27 +5,59 @@
 //  Created by Pedro Juan Baeza Gómez on 15/10/25.
 //
 
-struct CharacterResponse: Decodable, Sendable {
+public struct CharacterResponse: Decodable, Sendable {
     
-    let id: Int
-    let name: String
-    let status: String
-    let species: String
-    let type: String
-    let gender: String
-    let origin: CharacterOriginResponse
-    let location: CharacterLocationResponse
-    let image: String
+    public let id: Int
+    public let name: String
+    public let status: String
+    public let species: String
+    public let type: String
+    public let gender: String
+    public let origin: CharacterOriginResponse
+    public let location: CharacterLocationResponse
+    public let image: String
+    
+    public init(
+        id: Int,
+        name: String,
+        status: String,
+        species: String,
+        type: String,
+        gender: String,
+        origin: CharacterOriginResponse,
+        location: CharacterLocationResponse,
+        image: String
+    ) {
+        self.id = id
+        self.name = name
+        self.status = status
+        self.species = species
+        self.type = type
+        self.gender = gender
+        self.origin = origin
+        self.location = location
+        self.image = image
+    }
 }
 
-struct CharacterOriginResponse: Decodable, Sendable {
+public struct CharacterOriginResponse: Decodable, Sendable {
     
-    let name: String
-    let url: String
+    public let name: String
+    public let url: String
+    
+    public init(name: String, url: String) {
+        self.name = name
+        self.url = url
+    }
 }
 
-struct CharacterLocationResponse: Decodable, Sendable {
+public struct CharacterLocationResponse: Decodable, Sendable {
     
-    let name: String
-    let url: String
+    public let name: String
+    public let url: String
+    
+    public init(name: String, url: String) {
+        self.name = name
+        self.url = url
+    }
 }
