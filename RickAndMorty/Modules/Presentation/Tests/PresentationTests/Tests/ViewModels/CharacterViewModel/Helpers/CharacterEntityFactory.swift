@@ -32,4 +32,14 @@ final class CharacterEntityFactory {
             results: [makeCharacterEntity()]
         )
     }
+    
+    static func makeListTwoPagesEntity() -> ListEntity<CharacterEntity> {
+        ListEntity(
+            count: 2,
+            pages: 2,
+            next: nil,
+            previous: nil,
+            results: [makeCharacterEntity()]
+        )
+    }
 }
