@@ -5,45 +5,49 @@
 //  Created by Pedro Juan Baeza Gómez on 16/10/25.
 //
 
-import Foundation
 import Data
 
-public actor NetworkServiceMock: NetworkService {
+public actor NetworkServiceMock: NetworkService, Sendable {
     
-    var mockError: Error?
-    var mockResponse: Any?
+    private var mockError: NetworkError?
+    private var mockGetResponse: Any?
+    private var mockPostResponse: Any?
     
-    public func setMockError(_ error: Error) {
+    public func setMockError(_ error: NetworkError) {
         self.mockError = error
+        self.mockGetResponse = nil
+        self.mockPostResponse = nil
     }
     
-    public func setMockResponse(_ response: Any) {
-        self.mockResponse = response
+    public func setMockGetResponse(_ response: Any) {
+        self.mockError = nil
+        self.mockGetResponse = response
+        self.mockPostResponse = nil
+    }
+    
+    public func setMockPostResponse(_ response: Any) {
+        self.mockError = nil
+        self.mockGetResponse = nil
+        self.mockPostResponse = response
     }
     
     public func get<T>(resource: String, params: [String : String]?, bearer: String?) async throws -> T where T : Decodable {
-        
         if let error = mockError {
             throw error
         }
-        
-        if let response = mockResponse as? T {
+        if let response = mockGetResponse as? T {
             return response
         }
-        
         throw NetworkErrorMock.responseNotSet
     }
     
     public func post<T, U>(resource: String, body: U, bearer: String?) async throws -> T where T : Decodable, U : Encodable {
-        
         if let error = mockError {
             throw error
         }
-        
-        if let response = mockResponse as? T {
+        if let response = mockPostResponse as? T {
             return response
         }
-        
         throw NetworkErrorMock.responseNotSet
     }
 }

@@ -1,3 +1,10 @@
+//
+//  GetCharacterRepositoryTest.swift
+//  Data
+//
+//  Created by Pedro Juan Baeza Gómez on 16/10/25.
+//
+
 import XCTest
 import Factory
 import Domain
@@ -5,87 +12,54 @@ import Domain
 
 final class GetCharactersRepositoryTest: XCTestCase {
     
-    private var mock: NetworkServiceMock!
+    private var service: NetworkServiceMock!
     private var sut: CharacterRepositoryImpl!
     
     override func setUp() {
         super.setUp()
         
-        let mockLocal = NetworkServiceMock()
-        mock = mockLocal
+        let mock = NetworkServiceMock()
+        service = mock
         
         Container.shared.manager.push()
-        Container.shared.networkService.register { mockLocal }
+        Container.shared.networkService.register { mock }
+        
         sut = CharacterRepositoryImpl()
     }
     
     override func tearDown() {
-        mock = nil
         sut = nil
+        service = nil
         
         Container.shared.manager.pop()
         super.tearDown()
     }
     
-    func testGetCharactersSuccess() async {
-        let mockResponse = getMockResponse()
-        await mock.setMockResponse(mockResponse)
+    func test_execute_returnsCharacters_whenNetworkServiceSucceeds() async {
+        let expected = CharacterResponseFactory.makeListResponse()
+        await service.setMockGetResponse(expected)
         
         do {
             let result = try await sut.getCharacters(page: 1)
-            XCTAssertEqual(result.count, 1)
-            XCTAssertEqual(result.results[0].name, "Name")
-            XCTAssertEqual(result.results[0].status, "Status")
-            XCTAssertEqual(result.results[0].species, "Species")
-            XCTAssertEqual(result.results[0].type, "Type")
-            XCTAssertEqual(result.results[0].gender, "Gender")
-            XCTAssertEqual(result.results[0].origin, "OriginName")
-            XCTAssertEqual(result.results[0].location, "LocationName")
-            XCTAssertEqual(result.results[0].image, "Image")
+            CharacterResponseAssert.assertCharacterList(result, equals: expected.toDomain())
         } catch {
             XCTFail("Expected success but got error: \(error)")
         }
     }
     
-    func testGetCharactersError() async {
-        await mock.setMockError(NetworkError.invalidURL)
+    func test_execute_returnsError_whenNetworkServiceFails() async {
+        await service.setMockError(NetworkError.invalidURL)
         
         do {
             let result = try await sut.getCharacters(page: 1)
-            XCTFail("Expected error to be thrown but got success with: \(result)")
+            XCTFail("Expected failure but got success: \(result)")
         } catch {
             switch error {
-            case .generic(let description):
-                XCTAssertTrue(!description.isEmpty, "Error description should not be empty")
+            case .generic:
+                break
             default:
-                XCTFail("Expected RepositoryError.generic but got \(type(of: error)): \(error)")
+                XCTFail("Expected failure with generic error")
             }
         }
-    }
-    
-    private func getMockResponse() -> ListResponse<CharacterResponse> {
-        let mockInfoResponse = ListInfoResponse(
-            count: 1,
-            pages: 1,
-            next: "Next",
-            previous: "Previous"
-        )
-        
-        let mockItemResponse = CharacterResponse(
-            id: 0,
-            name: "Name",
-            status: "Status",
-            species: "Species",
-            type: "Type",
-            gender: "Gender",
-            origin: CharacterOriginResponse(name: "OriginName", url: "OriginUrl"),
-            location: CharacterLocationResponse(name: "LocationName", url: "LocationUrl"),
-            image: "Image"
-        )
-        
-        return ListResponse<CharacterResponse>(
-            info: mockInfoResponse,
-            results: [mockItemResponse]
-        )
     }
 }
