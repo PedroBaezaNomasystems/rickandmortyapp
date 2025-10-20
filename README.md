@@ -1,6 +1,6 @@
 # Rick & Morty
 
-Aplicación iOS que permite listar, buscar y visualizar los personajes de la serie *Rick and Morty*, utilizando la API REST oficial: [https://rickandmortyapi.com](https://rickandmortyapi.com).
+Aplicación iOS que permite listar, buscar y visualizar los personajes de la serie *Rick and Morty*, utilizando la API REST oficial: [https://rickandmortyapi.com](https://rickandmortyapi.com)
   
 <p align="left">
   <img src="ReadMeFiles/images/list.png" width="250" alt="Listado de personajes">
