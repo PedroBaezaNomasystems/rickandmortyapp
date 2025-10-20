@@ -4,7 +4,8 @@ Aplicación iOS que permite listar, buscar y visualizar los personajes de la ser
   
 <p align="left">
   <img src="ReadMeFiles/images/list.png" width="250" alt="Listado de personajes">
-  <img src="ReadMeFiles/images/detail.png" width="250" alt="Vista de personaje">
+  <img src="ReadMeFiles/images/detail-rick.png" width="250" alt="Vista de personaje">
+  <img src="ReadMeFiles/images/detail-jerry.png" width="250" alt="Vista de personaje">
 </p>
 
 ## Características principales
