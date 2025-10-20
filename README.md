@@ -1,33 +1,37 @@
 # Rick & Morty
-Aplicación iOS que permite listar, buscar y visualizar los personajes de la serie Rick y Morty con la ayuda de la APIRest *https://rickandmortyapi.com*
 
-Caracteristicas:
-- Swift
-- Diseño de interfaces con *SwiftUI*
-- *Clean Architecture*
-- *MVVM (Model view - view model)*
-- *async/await* como sistema de llamadas asíncronas
-- Configuración de entornos de desarrollo y esquemas *(Production, Staging)*
-- *SPM (Swift package manager)* para modularización de las capas *(Data, Domain, Presentation)* mediante paquetes locales 
-- *Strings Catalogs* para la localización de la aplicación
-- Implementación de *Unit Tests* con XCTest
-- Manejo centralizado del sistema de estilos (Fuentes, Colores y Temas)
-- Patrón de diseño *Router*: Desacoplamiento de la navegación
+Aplicación iOS que permite listar, buscar y visualizar los personajes de la serie *Rick and Morty*, utilizando la API REST oficial: [https://rickandmortyapi.com](https://rickandmortyapi.com).
 
-Librerias de terceros:
-- *Factory*: Injección de dependencias *https://github.com/hmlongco/Factory*
-- *Kingfisher*: Descarga y caché de imagenes *https://github.com/onevcat/Kingfisher*
+## Características principales
+- Desarrollo en **Swift**
+- Diseño de interfaces con **SwiftUI**
+- Arquitectura basada en **Clean Architecture**
+- Patrón **MVVM (Model-View-ViewModel)**
+- Uso de **async/await** para la gestión de llamadas asíncronas
+- Configuración de entornos y esquemas de desarrollo (**Production**, **Staging**)
+- Modularización mediante **Swift Package Manager (SPM)**, separando las capas en paquetes locales: *Data*, *Domain* y *Presentation*
+- Uso de **Strings Catalogs** para la localización de la aplicación
+- Implementación de **Unit Tests** con *XCTest*
+- Sistema centralizado de estilos (fuentes, colores y temas)
+- Patrón de diseño **Router** para el desacoplamiento de la navegación
 
-# Estructura del proyecto
-En cuanto a la estructura del proyecto nos encontramos con las siguientes carpetas principales:
-- *App*: Punto de entrada de la aplicación y todo el conjunto de archivos de configuración, fuentes, inyección de dependencias, localización y el resto de archivos de soporte.
-- *Components*: Componentes de uso genérico, archivos de configuración de estilo y las diferentes extensiones.
-- *Features*: Cada una características de la aplicación.
-- *Modules*: Contiene los paquetes SPM locales *Data*, *Domain* y *Presentation* de *Clean Architecture*.
+## Librerías de terceros
+- **Factory**: Inyección de dependencias — [https://github.com/hmlongco/Factory](https://github.com/hmlongco/Factory)
+- **Kingfisher**: Descarga y caché de imágenes — [https://github.com/onevcat/Kingfisher](https://github.com/onevcat/Kingfisher)
 
-# Paquetes locales SPM
-El proyecto emplea el sistema de paquetes locales gestionado por Swift Package Manager, para modularizar y desacoplar las distintas capas que componen una arquitectura limpia. En cada uno de los paquetes nos encontramos con el código fuente en la carpeta *Sources* y todo el conjunto de pruebas unitarias bajo la carpeta *Tests*.
+## Estructura del proyecto
+La estructura del proyecto se organiza en las siguientes carpetas principales:
 
-- *Data*: Paquete que contiene todo lo relacionado con el acceso y manejo de los datos *(DataSources, Repository Implementations)*
-- *Domain*: Paquete que contiene toda la lógica de negocio *(UseCases, Repository Protocols, Entities)*
-- *Presentation*: Paquete que contiene todo lo relacionado con la lógica de presentación *(ViewModels)*
+- **App**: Contiene el punto de entrada de la aplicación, los archivos de configuración, fuentes, inyección de dependencias, localización y otros recursos de soporte.  
+- **Components**: Componentes reutilizables, configuraciones de estilo y extensiones comunes.  
+- **Features**: Cada una de las funcionalidades principales de la aplicación.  
+- **Modules**: Contiene los paquetes locales de SPM correspondientes a las capas de *Clean Architecture*: *Data*, *Domain* y *Presentation*.
+
+## Paquetes locales (SPM)
+El proyecto utiliza **Swift Package Manager** con paquetes locales para lograr una modularización completa y un fuerte desacoplamiento entre las capas que componen la arquitectura limpia.
+
+Cada paquete incluye su código fuente en la carpeta *Sources* y las pruebas unitarias en la carpeta *Tests*.
+
+- **Data**: Contiene todo lo relacionado con el acceso y manejo de datos (*DataSources*, *Repository Implementations*).  
+- **Domain**: Incluye la lógica de negocio (*UseCases*, *Repository Protocols*, *Entities*).  
+- **Presentation**: Define la lógica de presentación (*ViewModels*).
