@@ -14,13 +14,13 @@ Aplicación iOS que permite listar, buscar y visualizar los personajes de la ser
 - Arquitectura basada en **Clean Architecture**
 - Patrón **MVVM (Model-View-ViewModel)**
 - Uso de **async/await** para la gestión de llamadas asíncronas
-- **Paginación de resultados** implementada para una carga eficiente de datos desde la API
 - Configuración de entornos y esquemas de desarrollo (**Production**, **Staging**)
 - Modularización mediante **Swift Package Manager (SPM)**, separando las capas en paquetes locales: *Data*, *Domain* y *Presentation*
 - Uso de **Strings Catalogs** para la localización de la aplicación
 - Implementación de **Unit Tests** con *XCTest*
 - Sistema centralizado de estilos (fuentes, colores y temas)
 - Patrón de diseño **Router** para el desacoplamiento de la navegación
+- **Paginación de resultados** implementada para una carga eficiente de datos desde la API
 
 ## Librerías de terceros
 - **Factory**: Inyección de dependencias — [https://github.com/hmlongco/Factory](https://github.com/hmlongco/Factory)
