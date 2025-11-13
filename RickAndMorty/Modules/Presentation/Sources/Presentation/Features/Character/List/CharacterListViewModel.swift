@@ -5,7 +5,12 @@ import SwiftUI
 
 @MainActor
 public class CharacterListViewModel: ObservableObject {
-    @Published public var modules: [any Module]
+    @Published public var module: any CharacterListModule
+    @Published public var modules: [any CharacterListCellModule] = [] {
+        didSet {
+            module = CharacterListModel(cells: modules)
+        }
+    }
     
     private var router: Routing?
     private var cancellables: [AnyCancellable]
@@ -16,54 +21,71 @@ public class CharacterListViewModel: ObservableObject {
     //TODO: Delete this vars after create module.
     @Published public var isError = false
     @Published public var isLoading = false
-    @Published public var search: String = ""
     @Published public var totalPages: Int = 1
     @Published public var currentPage: Int = 1
     
     public init(router: Routing?) {
+        self.module = CharacterListModel(cells: [])
         self.modules = []
         self.router = router
         self.cancellables = []
+        
+        initListeners()
     }
     
-    public func onRefresh() async {
-        await fetchFirstPage()
+    func initListeners() {
+        module.eventSignal.sink { event in
+            switch event {
+            case .onRefresh(let search): self.onReresh(search)
+            }
+        }
+        .store(in: &cancellables)
     }
 }
 
 private extension CharacterListViewModel {
     
-    func fetchFirstPage() async {
-        modules = []
-        totalPages = 1
-        currentPage = 1
-        
-        await fetchPage()
-    }
-    
-    func fetchNextPage() async {
-        currentPage += 1
-        
-        if currentPage <= totalPages {
-            await fetchPage()
+    func onReresh(_ search: String) {
+        Task {
+            await fetchFirstPage(search: search)
         }
     }
     
-    func fetchPage() async {
+    func fetchFirstPage(search: String) async {
+        totalPages = 1
+        currentPage = 1
+        modules.removeAll()
+        
+        await fetchPage(search: search)
+    }
+    
+    func fetchNextPage(search: String) async {
+        currentPage += 1
+        
+        if currentPage <= totalPages {
+            await fetchPage(search: search)
+        }
+    }
+    
+    func fetchPage(search: String) async {
         isLoading = true
         
         let result = await getCharactersUseCase.execute(data: (page: currentPage, search: search))
         switch result {
         case .success(let response):
-            let modules = CharacterListCellFactory.makeModules(
-                characters: response.results,
-                onTap: onTapCharacter,
-                onAppear: onAppearCharacter,
-                cancellables: &cancellables
-            )
+            let cells = CharacterListCellFactory.makeModules(characters: response.results)
+            cells.forEach { cell in
+                cell.eventSignal.sink { event in
+                    switch event {
+                    case .tapCharacter(let id): self.onTapCharacter(id)
+                    case .appearCharacter(let id): self.onAppearCharacter(id)
+                    }
+                }
+                .store(in: &cancellables)
+            }
             
-            self.totalPages = response.pages
-            self.modules.append(contentsOf: modules)
+            totalPages = response.pages
+            modules.append(contentsOf: cells)
         case .failure:
             isError = true
         }
@@ -71,17 +93,14 @@ private extension CharacterListViewModel {
         isLoading = false
     }
     
-    func onTapCharacter(id: Int) {
+    func onTapCharacter(_ id: Int) {
         router?.navigate(to: .character("\(id)"))
     }
     
-    func onAppearCharacter(id: Int) {
-        guard let lastModule = modules.last as? (any CharacterListCellModule), id == lastModule.id else {
-            return
-        }
-        
+    func onAppearCharacter(_ id: Int) {
+        guard let lastModule = modules.last, id == lastModule.id else { return }
         Task {
-            await self.fetchNextPage()
+            await self.fetchNextPage(search: "")
         }
     }
 }

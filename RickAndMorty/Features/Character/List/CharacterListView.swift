@@ -1,89 +1,64 @@
-//
-//  CharacterListView.swift
-//  RickAndMorty
-//
-//  Created by Pedro Juan Baeza Gómez on 15/10/25.
-//
-
 import SwiftUI
 import Domain
 import Combine
 import Presentation
 
-struct CharacterListView: View {    
-    @StateObject var viewModel: CharacterListViewModel
+struct CharacterListView: View {
+    @State private var search: String = ""
     
+    private let representable: CharacterListRepresentable
     private let cellRenderer: Renderer
     
-    init(router: Routing? = nil, cellRenderer: Renderer) {
-        self._viewModel = StateObject(wrappedValue: CharacterListViewModel(router: router))
+    init(representable: CharacterListRepresentable, cellRenderer: Renderer) {
+        self.representable = representable
         self.cellRenderer = cellRenderer
     }
     
     var body: some View {
         VStack {
             List {
-                ForEach(viewModel.modules, id: \.uuid) { module in
-                    cellRenderer.render(module: module)
+                ForEach(representable.cells, id: \.uuid) { cell in
+                    cellRenderer.render(module: cell)
                 }
                 
-                if !viewModel.isLoading && !viewModel.modules.isEmpty {
-                    ListProgress()
-                }
+                /*if !viewModel.isLoading && !viewModel.modules.isEmpty {
+                 ListProgress()
+                 }*/
             }
             .searchable(
-                text: $viewModel.search,
+                text: $search,
                 placement: .navigationBarDrawer,
                 prompt: "character_list_search_placeholder"
             )
             .onSubmit(of: .search) {
-                Task {
-                    await viewModel.onRefresh()
-                }
+                representable.onRefresh(search: search)
             }
-            .onChange(of: viewModel.search) { oldValue, newValue in
+            .onChange(of: search) { oldValue, newValue in
                 if newValue.isEmpty {
-                    Task {
-                        await viewModel.onRefresh()
-                    }
+                    representable.onRefresh(search: search)
                 }
             }
             .refreshable {
-                Task {
-                    await viewModel.onRefresh()
-                }
+                representable.onRefresh(search: search)
             }
             .overlay {
-                if viewModel.modules.isEmpty && !viewModel.isLoading {
-                    CharacterListViewEmpty
+                if representable.cells.isEmpty {
+                    ContentUnavailableView(
+                        "character_list_empty_list",
+                        systemImage: SystemIcon.persons.rawValue,
+                        description: Text("common_pull_to_refresh")
+                    )
                 }
             }
         }
-        .alert(isPresented: $viewModel.isError) {
-            CharacterListViewError
-        }
+        /*.alert(isPresented: $viewModel.isError) {
+            Alert(
+                title: Text("character_list_error_title"),
+                message: Text("character_list_error_message"),
+                primaryButton: .default(Text("common_ok")),
+                secondaryButton: .cancel()
+            )
+        }*/
         .navigationTitle("character_list_title")
     }
-    
-    @ViewBuilder
-    private var CharacterListViewEmpty: some View {
-        ContentUnavailableView(
-            "character_list_empty_list",
-            systemImage: SystemIcon.persons.rawValue,
-            description: Text("common_pull_to_refresh")
-        )
-    }
-    
-    private var CharacterListViewError: Alert {
-        Alert(
-            title: Text("character_list_error_title"),
-            message: Text("character_list_error_message"),
-            primaryButton: .default(Text("common_ok")),
-            secondaryButton: .cancel()
-        )
-    }
-}
-
-#Preview {
-    CharacterListView(cellRenderer: CharacterListCellRenderer())
 }
