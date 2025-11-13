@@ -30,6 +30,7 @@ public class CharacterListV2ViewModel: ObservableObject {
     }
     
     public func onRefresh() async {
+        
         await fetchFirstPage()
     }
 }
