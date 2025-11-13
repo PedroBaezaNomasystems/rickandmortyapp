@@ -26,7 +26,7 @@ public class CharacterListViewModel: ObservableObject {
         self.cancellables = []
     }
     
-    public func onRefresh() async {        
+    public func onRefresh() async {
         await fetchFirstPage()
     }
 }
@@ -55,22 +55,12 @@ private extension CharacterListViewModel {
         let result = await getCharactersUseCase.execute(data: (page: currentPage, search: search))
         switch result {
         case .success(let response):
-            let modules = CharacterListCellFactory.makeModules(characters: response.results)
-            modules.forEach { module in
-                module.eventSignal.sink { event in
-                    switch event {
-                    case .tapCharacter(let id):
-                        self.router?.navigate(to: .character("\(id)"))
-                    case .appearCharacter(let id):
-                        if let last = self.modules.last as? (any CharacterListCellModule), id == last.id {
-                            Task {
-                                await self.fetchNextPage()
-                            }
-                        }
-                    }
-                }
-                .store(in: &cancellables)
-            }
+            let modules = CharacterListCellFactory.makeModules(
+                characters: response.results,
+                onTap: onTapCharacter,
+                onAppear: onAppearCharacter,
+                cancellables: &cancellables
+            )
             
             self.totalPages = response.pages
             self.modules.append(contentsOf: modules)
@@ -79,5 +69,19 @@ private extension CharacterListViewModel {
         }
         
         isLoading = false
+    }
+    
+    func onTapCharacter(id: Int) {
+        router?.navigate(to: .character("\(id)"))
+    }
+    
+    func onAppearCharacter(id: Int) {
+        guard let lastModule = modules.last as? (any CharacterListCellModule), id == lastModule.id else {
+            return
+        }
+        
+        Task {
+            await self.fetchNextPage()
+        }
     }
 }
