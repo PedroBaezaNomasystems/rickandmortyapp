@@ -7,24 +7,84 @@
 
 import SwiftUI
 import Domain
+import Combine
 import Presentation
 
-struct CharacterListView: View {
+final class CharacterModelUI {
+    let uuid: UUID
+    let id: Int
+    let name: String
+    let image: String
+    let status: String
+    var eventSignal: AnyPublisher<CharacterModuleEvent, Never> {
+        eventSubject.eraseToAnyPublisher()
+    }
     
-    @StateObject var viewModel: CharacterListViewModel
+    private let eventSubject = PassthroughSubject<CharacterModuleEvent, Never>()
     
-    init(router: Routing? = nil) {        
-        _viewModel = StateObject(wrappedValue: CharacterListViewModel(router: router))
+    init(id: Int, name: String, image: String, status: String) {
+        self.uuid = UUID()
+        self.id = id
+        self.name = name
+        self.image = image
+        self.status = status
+    }
+}
+
+extension CharacterModelUI: CharacterModule {
+    
+}
+
+extension CharacterModelUI: CharacterViewRepresentable {
+    func onTapCharacter() {
+        eventSubject.send(.tapCharacter(id))
+    }
+    
+    func onAppearCharacter() {
+        eventSubject.send(.appearCharacter(id))
+    }
+}
+
+public protocol Module: Identifiable {
+    var uuid: UUID { get }
+}
+
+enum CharacterModuleEvent {
+    case tapCharacter(Int)
+    case appearCharacter(Int)
+}
+
+protocol CharacterModule: Module {
+    var id: Int { get }
+    var eventSignal: AnyPublisher<CharacterModuleEvent, Never> { get }
+}
+
+protocol CharacterViewRepresentable {
+    var name: String { get }
+    var image: String { get }
+    var status: String { get }
+    func onTapCharacter() -> Void
+    func onAppearCharacter() -> Void
+}
+
+struct CharacterListView: View {    
+    @StateObject var viewModel: CharacterListV2ViewModel
+    
+    private let renderer: Renderer
+    
+    init(router: Routing? = nil, renderer: Renderer) {
+        self._viewModel = StateObject(wrappedValue: CharacterListV2ViewModel())
+        self.renderer = renderer
     }
     
     var body: some View {
         VStack {
             List {
-                ForEach(viewModel.characters, id: \.id) { character in
-                    CharacterListViewItem(character: character)
+                ForEach(viewModel.modules, id: \.uuid) { module in
+                    renderer.render(module: module)
                 }
                 
-                if !viewModel.isLoading && !viewModel.characters.isEmpty {
+                if !viewModel.isLoading && !viewModel.modules.isEmpty {
                     ListProgress()
                 }
             }
@@ -51,7 +111,7 @@ struct CharacterListView: View {
                 }
             }
             .overlay {
-                if viewModel.characters.isEmpty && !viewModel.isLoading {
+                if viewModel.modules.isEmpty && !viewModel.isLoading {
                     CharacterListViewEmpty
                 }
             }
@@ -60,37 +120,6 @@ struct CharacterListView: View {
             CharacterListViewError
         }
         .navigationTitle("character_list_title")
-    }
-    
-    @ViewBuilder
-    private func CharacterListViewItem(character: CharacterEntity) -> some View {
-        HStack {
-            UrlImage(
-                url: character.image,
-                width: 60,
-                height: 60
-            )
-            .clipShape(Circle())
-            .overlay(Circle().stroke(Color.gray.opacity(0.3), lineWidth: 1))
-            
-            VStack(alignment: .leading) {
-                Text(character.name)
-                    .font(.openSansBold(size: .title))
-                
-                Text("\(character.status) - \(character.species)")
-                    .font(.openSansRegular(size: .label))
-            }
-        }
-        .onTapGesture {
-            viewModel.onClickOnCharacter(id: character.id)
-        }
-        .onAppear {
-            if character.id == viewModel.characters.last?.id {
-                Task {
-                    await viewModel.onRequestMoreCharacters()
-                }
-            }
-        }
     }
     
     @ViewBuilder
@@ -113,5 +142,5 @@ struct CharacterListView: View {
 }
 
 #Preview {
-    CharacterListView()
+    CharacterListView(renderer: CharacterListRenderer())
 }
