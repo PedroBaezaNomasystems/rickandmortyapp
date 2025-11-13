@@ -6,19 +6,17 @@
 //
 
 import SwiftUI
+import Presentation
 
-protocol Renderer {
-    func render(module: any Module) -> AnyView
-}
-
-struct CharacterListRenderer {
+public struct CharacterListCellRenderer {
     
 }
 
-extension CharacterListRenderer: Renderer {
-    func render(module: any Module) -> AnyView {
+extension CharacterListCellRenderer: Renderer {
+    
+    public func render(module: any Module) -> AnyView {
         switch module {
-        case (let character as CharacterViewRepresentable):
+        case (let character as CharacterListCellRepresentable):
             AnyView(
                 HStack {
                     UrlImage(

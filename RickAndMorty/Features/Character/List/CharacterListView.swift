@@ -10,78 +10,21 @@ import Domain
 import Combine
 import Presentation
 
-final class CharacterModelUI {
-    let uuid: UUID
-    let id: Int
-    let name: String
-    let image: String
-    let status: String
-    var eventSignal: AnyPublisher<CharacterModuleEvent, Never> {
-        eventSubject.eraseToAnyPublisher()
-    }
-    
-    private let eventSubject = PassthroughSubject<CharacterModuleEvent, Never>()
-    
-    init(id: Int, name: String, image: String, status: String) {
-        self.uuid = UUID()
-        self.id = id
-        self.name = name
-        self.image = image
-        self.status = status
-    }
-}
-
-extension CharacterModelUI: CharacterModule {
-    
-}
-
-extension CharacterModelUI: CharacterViewRepresentable {
-    func onTapCharacter() {
-        eventSubject.send(.tapCharacter(id))
-    }
-    
-    func onAppearCharacter() {
-        eventSubject.send(.appearCharacter(id))
-    }
-}
-
-public protocol Module: Identifiable {
-    var uuid: UUID { get }
-}
-
-enum CharacterModuleEvent {
-    case tapCharacter(Int)
-    case appearCharacter(Int)
-}
-
-protocol CharacterModule: Module {
-    var id: Int { get }
-    var eventSignal: AnyPublisher<CharacterModuleEvent, Never> { get }
-}
-
-protocol CharacterViewRepresentable {
-    var name: String { get }
-    var image: String { get }
-    var status: String { get }
-    func onTapCharacter() -> Void
-    func onAppearCharacter() -> Void
-}
-
 struct CharacterListView: View {    
-    @StateObject var viewModel: CharacterListV2ViewModel
+    @StateObject var viewModel: CharacterListViewModel
     
-    private let renderer: Renderer
+    private let cellRenderer: Renderer
     
-    init(router: Routing? = nil, renderer: Renderer) {
-        self._viewModel = StateObject(wrappedValue: CharacterListV2ViewModel())
-        self.renderer = renderer
+    init(router: Routing? = nil, cellRenderer: Renderer) {
+        self._viewModel = StateObject(wrappedValue: CharacterListViewModel(router: router))
+        self.cellRenderer = cellRenderer
     }
     
     var body: some View {
         VStack {
             List {
                 ForEach(viewModel.modules, id: \.uuid) { module in
-                    renderer.render(module: module)
+                    cellRenderer.render(module: module)
                 }
                 
                 if !viewModel.isLoading && !viewModel.modules.isEmpty {
@@ -142,5 +85,5 @@ struct CharacterListView: View {
 }
 
 #Preview {
-    CharacterListView(renderer: CharacterListRenderer())
+    CharacterListView(cellRenderer: CharacterListCellRenderer())
 }
