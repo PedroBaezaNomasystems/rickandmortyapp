@@ -12,9 +12,7 @@ import Factory
 
 @MainActor
 public class CharacterListV2ViewModel: ObservableObject {
-    @Published public var modules: [any Module] = []
-    
-    private var cancellables: [AnyCancellable] = []
+    @Published public var modules: [any Module]
     
     @Published public var isError = false
     @Published public var isLoading = false
@@ -22,15 +20,19 @@ public class CharacterListV2ViewModel: ObservableObject {
     @Published public var totalPages: Int = 1
     @Published public var currentPage: Int = 1
     
+    private var router: Routing?
+    private var cancellables: [AnyCancellable]
+    
     @Injected(\.getCharactersUseCase)
     private var getCharactersUseCase: (any GetCharactersUseCase)!
     
-    public init() {
-        
+    public init(router: Routing?) {
+        self.modules = []
+        self.router = router
+        self.cancellables = []
     }
     
-    public func onRefresh() async {
-        
+    public func onRefresh() async {        
         await fetchFirstPage()
     }
 }
@@ -82,9 +84,7 @@ private extension CharacterListV2ViewModel {
             module.eventSignal.sink { event in
                 switch event {
                 case .tapCharacter(let id):
-                    Task {
-                        await self.fetchFirstPage()
-                    }
+                    router?.navigate(to: .character("\(id)"))
                 case .appearCharacter(let id):
                     if let last = self.modules.last as? (any CharacterModule), id == last.id {
                         Task {
