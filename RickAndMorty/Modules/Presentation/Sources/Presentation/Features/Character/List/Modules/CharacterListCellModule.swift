@@ -1,5 +1,4 @@
 import Combine
-import SwiftUI
 
 public enum CharacterListCellModuleEvent {
     case tapCharacter(Int)

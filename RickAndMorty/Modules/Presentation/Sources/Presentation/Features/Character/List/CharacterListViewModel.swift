@@ -1,10 +1,3 @@
-//
-//  CharacterListViewModel.swift
-//  Presentation
-//
-//  Created by Pedro Juan Baeza Gómez on 15/10/25.
-//
-
 import Combine
 import Domain
 import Factory
@@ -14,17 +7,18 @@ import SwiftUI
 public class CharacterListViewModel: ObservableObject {
     @Published public var modules: [any Module]
     
-    @Published public var isError = false
-    @Published public var isLoading = false
-    @Published public var search: String = ""
-    @Published public var totalPages: Int = 1
-    @Published public var currentPage: Int = 1
-    
     private var router: Routing?
     private var cancellables: [AnyCancellable]
     
     @Injected(\.getCharactersUseCase)
     private var getCharactersUseCase: (any GetCharactersUseCase)!
+    
+    //TODO: Delete this vars after create module.
+    @Published public var isError = false
+    @Published public var isLoading = false
+    @Published public var search: String = ""
+    @Published public var totalPages: Int = 1
+    @Published public var currentPage: Int = 1
     
     public init(router: Routing?) {
         self.modules = []

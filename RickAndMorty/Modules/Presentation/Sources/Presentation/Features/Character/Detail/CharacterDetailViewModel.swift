@@ -1,17 +1,9 @@
-//
-//  CharacterViewModel.swift
-//  Presentation
-//
-//  Created by Pedro Juan Baeza Gómez on 15/10/25.
-//
-
-import SwiftUI
 import Domain
 import Factory
+import SwiftUI
 
 @MainActor
 public class CharacterDetailViewModel: ObservableObject {
-    
     @Published public var isError = false
     @Published public var isLoading = false
     @Published public var character: CharacterEntity? = nil
@@ -23,13 +15,11 @@ public class CharacterDetailViewModel: ObservableObject {
     private var getCharacterUseCase: (any GetCharacterUseCase)!
     
     public init(router: Routing?, characterId: String) {
-        
         self.router = router
         self.characterId = characterId
     }
     
-    public func onAppear() async {
-        
+    public func onAppear() async {        
         isLoading = true
         
         let result = await getCharacterUseCase.execute(data: characterId)

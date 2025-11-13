@@ -22,9 +22,7 @@ public final class CharacterListCellModel {
     }
 }
 
-extension CharacterListCellModel: CharacterListCellModule {
-    
-}
+extension CharacterListCellModel: CharacterListCellModule { }
 
 extension CharacterListCellModel: CharacterListCellRepresentable {
     public func onTapCharacter() {
