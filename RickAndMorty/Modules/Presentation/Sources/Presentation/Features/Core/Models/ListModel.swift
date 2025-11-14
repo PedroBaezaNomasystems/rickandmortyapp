@@ -2,31 +2,34 @@ import Combine
 import SwiftUI
 
 public final class ListModel {
-    @Published private var cells: [any Module]
+    @Published private var _cells: [any Module]
     
     public let uuid: UUID
-    public var cellsPublisher: Published<[any Module]>.Publisher { $cells }
     public var eventSignal: AnyPublisher<ListModuleEvent, Never> { eventSubject.eraseToAnyPublisher() }
     
     private let eventSubject = PassthroughSubject<ListModuleEvent, Never>()
     
     public init(cells: [any Module]) {
-        self.uuid = UUID()
-        self.cells = cells
+        _cells = cells
+        uuid = UUID()
     }
 }
 
 extension ListModel: ListModule {
     public func clearModules() {
-        cells = []
+        _cells = []
     }
     
     public func appendModules(_ modules: [any Module]) {
-        cells.append(contentsOf: modules)
+        _cells.append(contentsOf: modules)
     }
 }
 
 extension ListModel: ListRepresentable {
+    public var cells: Published<[any Module]>.Publisher {
+        $_cells
+    }
+    
     public func refresh() {
         eventSubject.send(.onRefresh)
     }

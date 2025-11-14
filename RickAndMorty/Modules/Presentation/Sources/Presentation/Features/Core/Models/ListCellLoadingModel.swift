@@ -2,7 +2,7 @@ import Combine
 import Foundation
 
 public final class ListCellLoadingModel {
-    @Published public var _isLoading: Bool
+    @Published private var _isLoading: Bool
     
     public let uuid: UUID
     

@@ -16,15 +16,15 @@ struct ListView: View {
     
     var body: some View {
         List {
-            ForEach(cells, id: \.uuid) { cell in
-                cellRenderer.render(module: cell)
+            ForEach(cells, id: \.uuid) {
+                cellRenderer.render(module: $0)
             }
-        }
-        .onReceive(representable.cellsPublisher) { representableCells in
-            cells = representableCells
         }
         .refreshable {
             representable.refresh()
+        }
+        .onReceive(representable.cells) {
+            cells = $0
         }
         .overlay {
             if cells.isEmpty {
