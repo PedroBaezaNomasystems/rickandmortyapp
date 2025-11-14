@@ -2,9 +2,9 @@ import Combine
 import SwiftUI
 
 public final class ListModel {
-    @Published public var cells: [any Module]
+    @Published private var cells: [any Module]
     
-    public var uuid: UUID
+    public let uuid: UUID
     public var cellsPublisher: Published<[any Module]>.Publisher { $cells }
     public var eventSignal: AnyPublisher<ListModuleEvent, Never> { eventSubject.eraseToAnyPublisher() }
     

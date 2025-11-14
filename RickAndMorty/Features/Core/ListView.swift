@@ -29,7 +29,7 @@ struct ListView: View {
         .overlay {
             if cells.isEmpty {
                 ContentUnavailableView(
-                    "character_list_empty_list",
+                    "common_list_empty",
                     systemImage: SystemIcon.persons.rawValue,
                     description: Text("common_pull_to_refresh")
                 )

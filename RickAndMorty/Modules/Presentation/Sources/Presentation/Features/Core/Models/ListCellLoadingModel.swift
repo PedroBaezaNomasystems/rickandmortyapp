@@ -1,23 +1,24 @@
 import Combine
 import Foundation
 
-public final class CellLoadingModel {
+public final class ListCellLoadingModel {
+    @Published public var _isLoading: Bool
+    
     public let uuid: UUID
-    @Published private var _isLoading: Bool
     
     init() {
-        uuid = UUID()
         _isLoading = false
+        uuid = UUID()
     }
 }
 
-extension CellLoadingModel: CellLoadingModule {
+extension ListCellLoadingModel: ListCellLoadingModule {
     public var isLoading: Published<Bool>.Publisher {
         $_isLoading
     }
 }
 
-extension CellLoadingModel: CellLoadingRepresentable {
+extension ListCellLoadingModel: ListCellLoadingRepresentable {
     public func start() {
         _isLoading = true
     }

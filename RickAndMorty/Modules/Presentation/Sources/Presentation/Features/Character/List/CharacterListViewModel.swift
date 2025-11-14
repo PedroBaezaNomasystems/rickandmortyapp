@@ -13,12 +13,6 @@ public class CharacterListViewModel: ObservableObject {
     @Injected(\.getCharactersUseCase)
     private var getCharactersUseCase: (any GetCharactersUseCase)!
     
-    //TODO: Delete this vars after create module.
-    @Published public var isError = false
-    @Published public var isLoading = false
-    @Published public var totalPages: Int = 1
-    @Published public var currentPage: Int = 1
-    
     public init(router: Routing?) {
         self.module = ListModel(cells: [])
         self.router = router
@@ -45,18 +39,13 @@ private extension CharacterListViewModel {
     }
     
     func fetchPage() async {
-        isLoading = true
-        
-        let result = await getCharactersUseCase.execute(data: (page: currentPage, search: ""))
+        let result = await getCharactersUseCase.execute(data: (page: 1, search: ""))
         switch result {
         case .success(let response):
-            totalPages = response.pages
             module.appendModules(makeModules(characters: response.results))
         case .failure:
-            isError = true
+            break
         }
-        
-        isLoading = false
     }
     
     func makeModules(characters: [CharacterEntity]) -> [any Module] {
