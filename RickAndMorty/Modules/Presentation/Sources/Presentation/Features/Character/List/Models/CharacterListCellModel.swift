@@ -28,9 +28,5 @@ extension CharacterListCellModel: CharacterListCellRepresentable {
     public func onTapCharacter() {
         eventSubject.send(.tapCharacter(id))
     }
-    
-    public func onAppearCharacter() {
-        eventSubject.send(.appearCharacter(id))
-    }
 }
 

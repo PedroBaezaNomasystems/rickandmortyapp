@@ -1,7 +1,7 @@
 import SwiftUI
 import Presentation
 
-public struct CharacterListRenderer {
+public struct ListRenderer {
     let cellRenderer: Renderer
     
     public init(cellRenderer: Renderer) {
@@ -9,12 +9,11 @@ public struct CharacterListRenderer {
     }
 }
 
-extension CharacterListRenderer: Renderer {
-    
+extension ListRenderer: Renderer {
     public func render(module: any Module) -> AnyView {
         switch module {
-        case (let representable as CharacterListRepresentable):
-            AnyView(CharacterListView(representable: representable, cellRenderer: cellRenderer))
+        case (let representable as any ListRepresentable):
+            AnyView(ListView(representable: representable, cellRenderer: cellRenderer))
         default:
             AnyView(EmptyView())
         }

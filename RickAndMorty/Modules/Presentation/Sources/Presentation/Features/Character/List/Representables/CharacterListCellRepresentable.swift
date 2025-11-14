@@ -5,5 +5,4 @@ public protocol CharacterListCellRepresentable {
     var image: String { get }
     var status: String { get }
     func onTapCharacter() -> Void
-    func onAppearCharacter() -> Void
 }

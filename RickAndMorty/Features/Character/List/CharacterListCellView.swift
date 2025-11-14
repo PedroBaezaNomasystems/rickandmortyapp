@@ -4,9 +4,9 @@ import Combine
 import Presentation
 
 struct CharacterListCellView: View {
-    private let representable: CharacterListCellRepresentable
+    private let representable: any CharacterListCellRepresentable
     
-    init(representable: CharacterListCellRepresentable) {
+    init(representable: any CharacterListCellRepresentable) {
         self.representable = representable
     }
     
@@ -30,9 +30,6 @@ struct CharacterListCellView: View {
         }
         .onTapGesture {
             representable.onTapCharacter()
-        }
-        .onAppear {
-            representable.onAppearCharacter()
         }
     }
 }

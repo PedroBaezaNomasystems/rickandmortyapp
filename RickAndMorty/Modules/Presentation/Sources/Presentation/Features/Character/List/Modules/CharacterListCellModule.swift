@@ -2,7 +2,6 @@ import Combine
 
 public enum CharacterListCellModuleEvent {
     case tapCharacter(Int)
-    case appearCharacter(Int)
 }
 
 public protocol CharacterListCellModule: Module {

@@ -2,24 +2,17 @@ import Presentation
 import SwiftUI
 
 struct AppView: View {
-    @StateObject var router: Router
-    @StateObject var characterListViewModel: CharacterListViewModel
+    @StateObject var router: Router = Router()
     
-    private let renderer: CharacterListRenderer = CharacterListRenderer(cellRenderer: CharacterListCellRenderer())
-    
-    init() {
-        let router = Router()
-        self._router = StateObject(wrappedValue: router)
-        self._characterListViewModel = StateObject(wrappedValue: CharacterListViewModel(router: router))
-    }
+    private var renderer = ListRenderer(cellRenderer: CharacterListCellRenderer())
     
     var body: some View {
         NavigationStack(path: $router.navPath) {
-            renderer.render(module: characterListViewModel.module)
+            CharacterListView(renderer: renderer, router: router)
                 .navigationDestination(for: Destination.self) { destination in
                     switch destination {
                     case .list:
-                        renderer.render(module: characterListViewModel.module)
+                        CharacterListView(renderer: renderer, router: router)
                     case let .character(characterId):
                         CharacterDetailView(router: router, characterId: characterId)
                     }
