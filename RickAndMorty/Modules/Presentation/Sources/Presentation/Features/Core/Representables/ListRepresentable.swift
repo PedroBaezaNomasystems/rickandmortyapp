@@ -1,6 +1,6 @@
 import Foundation
 
 public protocol ListRepresentable {
-    var dataSource: ListDataSource { get }
+    var listDataSource: ListDataSource { get }
     func refresh()
 }

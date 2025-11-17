@@ -3,12 +3,12 @@ import SwiftUI
 
 public final class ListModel {
     public let uuid: UUID
-    public let dataSource: ListDataSource
+    public let listDataSource: ListDataSource
     private let eventSubject = PassthroughSubject<ListModuleEvent, Never>()
     
     public init(cells: [any Module]) {
         uuid = UUID()
-        dataSource = ListDataSource(cells: cells)
+        listDataSource = ListDataSource(cells: cells)
     }
 }
 
@@ -18,11 +18,11 @@ extension ListModel: ListModule {
     }
     
     public func clearModules() {
-        dataSource.cells = []
+        listDataSource.cells = []
     }
     
     public func appendModules(_ modules: [any Module]) {
-        dataSource.cells.append(contentsOf: modules)
+        listDataSource.cells.append(contentsOf: modules)
     }
 }
 

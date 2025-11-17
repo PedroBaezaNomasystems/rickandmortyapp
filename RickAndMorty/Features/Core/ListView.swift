@@ -9,7 +9,7 @@ struct ListView: View {
     private let cellRenderer: Renderer
     
     init(representable: any ListRepresentable, cellRenderer: Renderer) {
-        self._dataSource = StateObject(wrappedValue: representable.dataSource)
+        self._dataSource = StateObject(wrappedValue: representable.listDataSource)
         self.representable = representable
         self.cellRenderer = cellRenderer
     }
