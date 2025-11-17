@@ -21,7 +21,7 @@ struct ListView: View {
             }
         }
         .refreshable {
-            representable.refresh()
+            representable.onRefresh()
         }
         .overlay {
             if dataSource.cells.isEmpty {

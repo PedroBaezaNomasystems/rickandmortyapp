@@ -2,17 +2,14 @@ import Combine
 import SwiftUI
 
 public final class ListSearchModel {
-    
-    public var uuid: UUID {
-        model.uuid
-    }
-    public let model: ListModel
+    public var uuid: UUID { listModel.uuid }
+    public let listModel: ListModel
     public let searchDataSource: SearchDataSource
     private let eventSubject = PassthroughSubject<SearchModuleEvent, Never>()
     
-    public init(model: ListModel) {
-        self.model = model
-        self.searchDataSource = SearchDataSource(search: "")
+    public init(listModel: ListModel) {
+        self.listModel = listModel
+        self.searchDataSource = SearchDataSource()
     }
 }
 
@@ -33,24 +30,24 @@ extension ListSearchModel: SearchRepresentable {
 }
 
 extension ListSearchModel: ListModule {
-    public var eventSignal: AnyPublisher<ListModuleEvent, Never> {
-        model.eventSignal
+    public var listSignal: AnyPublisher<ListModuleEvent, Never> {
+        listModel.listSignal
     }
     
     public func clearModules() {
-        model.clearModules()
+        listModel.clearModules()
     }
     
     public func appendModules(_ modules: [any Module]) {
-        model.appendModules(modules)
+        listModel.appendModules(modules)
     }
 }
 
 extension ListSearchModel: ListRepresentable {
     public var listDataSource: ListDataSource {
-        model.listDataSource
+        listModel.listDataSource
     }
-    public func refresh() {
-        model.refresh()
+    public func onRefresh() {
+        listModel.onRefresh()
     }
 }

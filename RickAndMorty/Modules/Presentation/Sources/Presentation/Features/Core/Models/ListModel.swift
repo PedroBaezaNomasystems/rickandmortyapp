@@ -13,7 +13,7 @@ public final class ListModel {
 }
 
 extension ListModel: ListModule {
-    public var eventSignal: AnyPublisher<ListModuleEvent, Never> {
+    public var listSignal: AnyPublisher<ListModuleEvent, Never> {
         eventSubject.eraseToAnyPublisher()
     }
     
@@ -27,7 +27,7 @@ extension ListModel: ListModule {
 }
 
 extension ListModel: ListRepresentable {
-    public func refresh() {
+    public func onRefresh() {
         eventSubject.send(.onRefresh)
     }
 }

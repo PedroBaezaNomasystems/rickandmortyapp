@@ -5,7 +5,7 @@ public enum ListModuleEvent {
 }
 
 public protocol ListModule: Module {
-    var eventSignal: AnyPublisher<ListModuleEvent, Never> { get }
+    var listSignal: AnyPublisher<ListModuleEvent, Never> { get }
     func clearModules()
     func appendModules(_ modules: [any Module])
 }

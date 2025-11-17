@@ -14,7 +14,7 @@ public class CharacterListViewModel: ObservableObject {
     private var getCharactersUseCase: (any GetCharactersUseCase)!
     
     public init(router: Routing?) {
-        self.module = ListSearchModel(model: ListModel(cells: []))
+        self.module = ListSearchModel(listModel: ListModel(cells: []))
         self.router = router
         self.cancellables = []
         
@@ -22,7 +22,7 @@ public class CharacterListViewModel: ObservableObject {
     }
     
     func initListeners() {
-        module.eventSignal.sink { event in
+        module.listSignal.sink { event in
             switch event {
             case .onRefresh: self.onReresh()
             }

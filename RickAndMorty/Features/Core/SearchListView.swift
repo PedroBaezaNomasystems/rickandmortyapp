@@ -19,7 +19,7 @@ struct SearchListView: View {
             .searchable(
                 text: $dataSource.search,
                 placement: .navigationBarDrawer,
-                prompt: LocalizedStringKey("character_list_search_placeholder")
+                prompt: LocalizedStringKey("common_search_placeholder")
             )
             .onSubmit(of: .search) {
                 representable.onSubmit()
