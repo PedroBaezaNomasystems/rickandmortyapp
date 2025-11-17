@@ -4,30 +4,27 @@ import Combine
 import Presentation
 
 struct ListView: View {
-    @State private var cells: [any Module] = []
-    
+    @StateObject private var dataSource: ListDataSource
     private let representable: any ListRepresentable
     private let cellRenderer: Renderer
     
     init(representable: any ListRepresentable, cellRenderer: Renderer) {
+        self._dataSource = StateObject(wrappedValue: representable.dataSource)
         self.representable = representable
         self.cellRenderer = cellRenderer
     }
     
     var body: some View {
         List {
-            ForEach(cells, id: \.uuid) {
+            ForEach(dataSource.cells, id: \.uuid) {
                 cellRenderer.render(module: $0)
             }
         }
         .refreshable {
             representable.refresh()
         }
-        .onReceive(representable.cells) {
-            cells = $0
-        }
         .overlay {
-            if cells.isEmpty {
+            if dataSource.cells.isEmpty {
                 ContentUnavailableView(
                     "common_list_empty",
                     systemImage: SystemIcon.persons.rawValue,
