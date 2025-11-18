@@ -13,17 +13,7 @@ struct CharacterListView: View {
     }
     
     var body: some View {
-        VStack {
-            renderer.render(module: viewModel.module)
-        }
-        .alert(isPresented: .constant(false)) {
-            Alert(
-                title: Text("character_list_error_title"),
-                message: Text("character_list_error_message"),
-                primaryButton: .default(Text("common_ok")),
-                secondaryButton: .cancel()
-            )
-        }
-        .navigationTitle("character_list_title")
+        renderer.render(module: viewModel.module)
+            .navigationTitle("character_list_title")
     }
 }
