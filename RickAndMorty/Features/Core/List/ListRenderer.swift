@@ -14,6 +14,8 @@ extension ListRenderer: Renderer {
         switch module {
         case (let representable as any ListRepresentable & ListInfiniteRepresentable & SearchRepresentable):
             AnyView(SearchListView(representable: representable, cellRenderer: cellRenderer))
+        case (let representable as any ListRepresentable & ListInfiniteRepresentable):
+            AnyView(ListView(representable: representable, cellRenderer: cellRenderer))
         case (let representable as any ListRepresentable & SearchRepresentable):
             AnyView(SearchListView(representable: representable, cellRenderer: cellRenderer))
         case (let representable as any ListRepresentable):
