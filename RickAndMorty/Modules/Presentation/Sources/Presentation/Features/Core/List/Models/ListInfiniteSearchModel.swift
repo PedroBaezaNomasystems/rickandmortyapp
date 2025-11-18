@@ -28,6 +28,10 @@ extension ListInfiniteSearchModel: ListInfiniteModule {
     public func prepareNextPage(pages: Int) {
         listInfiniteDataSource.prepareNextPage(pages: pages)
     }
+    
+    public func clearLoadingModules() {
+        searchModel.listDataSource.cells.removeAll(where: { $0 is any ListCellLoadingModule })
+    }
 }
 
 extension ListInfiniteSearchModel: ListInfiniteRepresentable {

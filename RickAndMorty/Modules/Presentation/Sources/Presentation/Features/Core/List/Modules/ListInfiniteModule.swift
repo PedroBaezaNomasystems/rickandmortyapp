@@ -5,4 +5,5 @@ public protocol ListInfiniteModule: Module {
     var thereAreMorePages: Bool { get }
     func prepareFirstPage()
     func prepareNextPage(pages: Int)
+    func clearLoadingModules()
 }

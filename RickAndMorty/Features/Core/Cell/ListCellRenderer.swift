@@ -1,12 +1,11 @@
 import SwiftUI
 import Presentation
 
-public struct ListCellLoadingRenderer {
+public struct ListCellRenderer {
     
 }
 
-extension ListCellLoadingRenderer: Renderer {
-    
+extension ListCellRenderer: Renderer {
     public func render(module: any Module) -> AnyView {
         switch module {
         case (let representable as any ListCellLoadingRepresentable):

@@ -58,6 +58,8 @@ private extension CharacterListViewModel {
         switch result {
         case .success(let response):
             module.prepareNextPage(pages: response.pages)
+            
+            module.clearLoadingModules()
             module.appendModules(makeModules(characters: response.results))
         case .failure:
             break
@@ -79,7 +81,11 @@ private extension CharacterListViewModel {
         
         let loading = CharacterListFactory.makeLoadingModule()
         loading.isLoading.sink { isLoading in
-            guard isLoading, self.module.thereAreMorePages else { return }
+            guard isLoading, self.module.thereAreMorePages else {
+                self.module.clearLoadingModules()
+                return
+            }
+            
             self.onNextPage()
         }
         .store(in: &cancellables)

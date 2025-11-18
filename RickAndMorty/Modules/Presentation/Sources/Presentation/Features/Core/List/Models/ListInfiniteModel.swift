@@ -28,6 +28,10 @@ extension ListInfiniteModel: ListInfiniteModule {
     public func prepareNextPage(pages: Int) {
         listInfiniteDataSource.prepareNextPage(pages: pages)
     }
+    
+    public func clearLoadingModules() {
+        listModel.listDataSource.cells.removeAll(where: { $0 is any ListCellLoadingModule })
+    }
 }
 
 extension ListInfiniteModel: ListInfiniteRepresentable {
@@ -44,7 +48,6 @@ extension ListInfiniteModel: ListModule {
     }
     
     public func appendModules(_ modules: [any Module]) {
-        listModel.listDataSource.cells.removeAll(where: { $0 is any ListCellLoadingModule })
         listModel.appendModules(modules)
     }
 }
