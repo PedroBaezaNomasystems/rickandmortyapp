@@ -81,7 +81,7 @@ private extension CharacterListViewModel {
     func makeModules(characters: [CharacterEntity]) -> [any Module] {
         var modules: [any Module] = []
         
-        let characters = CharacterListCellFactory.makeCharactersModules(characters)
+        let characters = CharacterListFactory.makeCharactersModules(characters)
         characters.forEach { cell in
             cell.eventSignal.sink { event in
                 switch event {
@@ -91,7 +91,7 @@ private extension CharacterListViewModel {
             .store(in: &cancellables)
         }
         
-        let loading = CharacterListCellFactory.makeLoadingModules()
+        let loading = CharacterListFactory.makeLoadingModule()
         loading.isLoading.sink { isLoading in
             if isLoading {
                 self.onNextPage()

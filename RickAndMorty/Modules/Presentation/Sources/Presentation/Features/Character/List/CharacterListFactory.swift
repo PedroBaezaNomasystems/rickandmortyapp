@@ -1,8 +1,8 @@
 import Combine
 import Domain
 
-final class CharacterListCellFactory {
-    static func makeLoadingModules() -> any ListCellLoadingModule {
+final class CharacterListFactory {
+    static func makeLoadingModule() -> any ListCellLoadingModule {
         ListCellLoadingModel()
     }
     
