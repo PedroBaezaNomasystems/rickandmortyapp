@@ -1,5 +1,6 @@
 import Foundation
 
 public protocol ListCellLoadingRepresentable {
-    func start()
+    var infiniteDataSource: ListCellLoadingDataSource { get }
+    func onStart()
 }

@@ -5,7 +5,7 @@ import SwiftUI
 
 @MainActor
 public class CharacterListViewModel: ObservableObject {
-    @Published public var module: any ListModule & SearchModule
+    @Published public var module: any ListModule & ListInfiniteModule & SearchModule
     
     private var router: Routing?
     private var cancellables: [AnyCancellable]
@@ -14,7 +14,7 @@ public class CharacterListViewModel: ObservableObject {
     private var getCharactersUseCase: (any GetCharactersUseCase)!
     
     public init(router: Routing?) {
-        self.module = ListSearchModel(listModel: ListModel(cells: []))
+        self.module = ListInfiniteSearchModel(pages: 1, current: 1, searchModel: ListSearchModel(listModel: ListModel(cells: [])))
         self.router = router
         self.cancellables = []
         
@@ -40,23 +40,40 @@ public class CharacterListViewModel: ObservableObject {
 
 private extension CharacterListViewModel {
     func onReresh() {
-        Task {
-            module.clearModules()
-            await fetchPage()
-        }
+        onFirstPage()
     }
     
     func onSearchSubmit(_ search: String) {
+        onFirstPage(search: search)
+    }
+    
+    func onFirstPage(search: String = "") {
         Task {
+            module.pages = 42
+            module.current = 40
             module.clearModules()
+            
             await fetchPage(search: search)
         }
     }
     
+    func onNextPage() {
+        Task {
+            module.current += 1
+            
+            guard module.current <= module.pages else {
+                module.clearLoadingModules()
+                return
+            }
+            await fetchPage()
+        }
+    }
+    
     func fetchPage(search: String = "") async {
-        let result = await getCharactersUseCase.execute(data: (page: 1, search: search))
+        let result = await getCharactersUseCase.execute(data: (page: module.current, search: search))
         switch result {
         case .success(let response):
+            module.pages = response.pages
             module.appendModules(makeModules(characters: response.results))
         case .failure:
             break
@@ -76,7 +93,16 @@ private extension CharacterListViewModel {
             .store(in: &cancellables)
         }
         
+        let loading = ListCellLoadingModel()
+        loading.isLoading.sink { isLoading in
+            if isLoading {
+                self.onNextPage()
+            }
+        }
+        .store(in: &cancellables)
+        
         modules.append(contentsOf: characters)
+        modules.append(loading)
         
         return modules
     }

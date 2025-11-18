@@ -1,25 +1,24 @@
 import Combine
-import Foundation
+import SwiftUI
 
 public final class ListCellLoadingModel {
-    @Published private var _isLoading: Bool
-    
     public let uuid: UUID
+    public let infiniteDataSource: ListCellLoadingDataSource
     
-    init() {
-        _isLoading = false
+    public init() {
         uuid = UUID()
+        infiniteDataSource = ListCellLoadingDataSource()
     }
 }
 
 extension ListCellLoadingModel: ListCellLoadingModule {
     public var isLoading: Published<Bool>.Publisher {
-        $_isLoading
+        infiniteDataSource.$isLoading
     }
 }
 
 extension ListCellLoadingModel: ListCellLoadingRepresentable {
-    public func start() {
-        _isLoading = true
+    public func onStart() {
+        infiniteDataSource.isLoading = true
     }
 }

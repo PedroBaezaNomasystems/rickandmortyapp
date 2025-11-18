@@ -12,6 +12,8 @@ public struct ListRenderer {
 extension ListRenderer: Renderer {
     public func render(module: any Module) -> AnyView {
         switch module {
+        case (let representable as any ListRepresentable & ListInfiniteRepresentable & SearchRepresentable):
+            AnyView(SearchListView(representable: representable, cellRenderer: cellRenderer))
         case (let representable as any ListRepresentable & SearchRepresentable):
             AnyView(SearchListView(representable: representable, cellRenderer: cellRenderer))
         case (let representable as any ListRepresentable):
