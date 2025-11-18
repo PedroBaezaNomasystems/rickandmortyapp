@@ -24,5 +24,10 @@ struct SearchListView: View {
             .onSubmit(of: .search) {
                 representable.onSubmit()
             }
+            .onChange(of: dataSource.search) { oldValue, newValue in
+                if newValue.isEmpty {
+                    representable.onSubmit()
+                }
+            }
     }
 }
