@@ -25,12 +25,16 @@ extension ListInfiniteSearchModel: ListInfiniteRepresentable {
 }
 
 extension ListInfiniteSearchModel: SearchModule {
-    public var searchSignal: AnyPublisher<SearchModuleEvent, Never> {
-        searchModel.searchSignal
+    public var searchText: String {
+        searchModel.searchText
     }
     
-    public var search: Published<String>.Publisher {
-        searchModel.search
+    public var searchPublisher: Published<String>.Publisher {
+        searchModel.searchPublisher
+    }
+    
+    public var searchEventSignal: AnyPublisher<SearchModuleEvent, Never> {
+        searchModel.searchEventSignal
     }
 }
 
@@ -45,8 +49,8 @@ extension ListInfiniteSearchModel: SearchRepresentable {
 }
 
 extension ListInfiniteSearchModel: ListModule {
-    public var listSignal: AnyPublisher<ListModuleEvent, Never> {
-        searchModel.listSignal
+    public var listEventSignal: AnyPublisher<ListModuleEvent, Never> {
+        searchModel.listEventSignal
     }
     
     public func clearModules() {

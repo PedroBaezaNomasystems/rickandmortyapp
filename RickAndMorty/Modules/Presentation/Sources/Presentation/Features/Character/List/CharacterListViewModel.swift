@@ -22,16 +22,16 @@ public class CharacterListViewModel: ObservableObject {
     }
     
     func initListeners() {
-        module.listSignal.sink { event in
+        module.listEventSignal.sink { event in
             switch event {
             case .onRefresh: self.onReresh()
             }
         }
         .store(in: &cancellables)
         
-        module.searchSignal.sink { event in
+        module.searchEventSignal.sink { event in
             switch event {
-            case let .onSubmit(search): self.onSearchSubmit(search)
+            case .onSubmit: self.onSubmit()
             }
         }
         .store(in: &cancellables)
@@ -43,34 +43,32 @@ private extension CharacterListViewModel {
         onFirstPage()
     }
     
-    func onSearchSubmit(_ search: String) {
-        onFirstPage(search: search)
+    func onSubmit() {
+        onFirstPage()
     }
     
-    func onFirstPage(search: String = "") {
+    func onFirstPage() {
         Task {
-            module.pages = 42
-            module.current = 40
+            module.pages = 1
+            module.current = 1
             module.clearModules()
             
-            await fetchPage(search: search)
+            await fetchPage()
         }
     }
     
     func onNextPage() {
         Task {
             module.current += 1
+            module.clearLoadingModules()
             
-            guard module.current <= module.pages else {
-                module.clearLoadingModules()
-                return
-            }
+            guard module.current <= module.pages else { return }
             await fetchPage()
         }
     }
     
-    func fetchPage(search: String = "") async {
-        let result = await getCharactersUseCase.execute(data: (page: module.current, search: search))
+    func fetchPage() async {
+        let result = await getCharactersUseCase.execute(data: (page: module.current, search: module.searchText))
         switch result {
         case .success(let response):
             module.pages = response.pages
@@ -83,7 +81,7 @@ private extension CharacterListViewModel {
     func makeModules(characters: [CharacterEntity]) -> [any Module] {
         var modules: [any Module] = []
         
-        let characters = CharacterListCellFactory.makeModules(characters: characters)
+        let characters = CharacterListCellFactory.makeCharactersModules(characters)
         characters.forEach { cell in
             cell.eventSignal.sink { event in
                 switch event {
@@ -93,7 +91,7 @@ private extension CharacterListViewModel {
             .store(in: &cancellables)
         }
         
-        let loading = ListCellLoadingModel()
+        let loading = CharacterListCellFactory.makeLoadingModules()
         loading.isLoading.sink { isLoading in
             if isLoading {
                 self.onNextPage()

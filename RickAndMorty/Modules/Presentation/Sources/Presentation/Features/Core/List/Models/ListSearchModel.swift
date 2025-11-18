@@ -14,24 +14,28 @@ public final class ListSearchModel {
 }
 
 extension ListSearchModel: SearchModule {
-    public var searchSignal: AnyPublisher<SearchModuleEvent, Never> {
-        eventSubject.eraseToAnyPublisher()
+    public var searchText: String {
+        searchDataSource.search
     }
     
-    public var search: Published<String>.Publisher {
+    public var searchPublisher: Published<String>.Publisher {
         searchDataSource.$search
+    }
+    
+    public var searchEventSignal: AnyPublisher<SearchModuleEvent, Never> {
+        eventSubject.eraseToAnyPublisher()
     }
 }
 
 extension ListSearchModel: SearchRepresentable {
     public func onSubmit() {
-        eventSubject.send(.onSubmit(searchDataSource.search))
+        eventSubject.send(.onSubmit)
     }
 }
 
 extension ListSearchModel: ListModule {
-    public var listSignal: AnyPublisher<ListModuleEvent, Never> {
-        listModel.listSignal
+    public var listEventSignal: AnyPublisher<ListModuleEvent, Never> {
+        listModel.listEventSignal
     }
     
     public func clearModules() {

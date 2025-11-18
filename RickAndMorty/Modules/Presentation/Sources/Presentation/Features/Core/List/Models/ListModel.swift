@@ -13,7 +13,7 @@ public final class ListModel {
 }
 
 extension ListModel: ListModule {
-    public var listSignal: AnyPublisher<ListModuleEvent, Never> {
+    public var listEventSignal: AnyPublisher<ListModuleEvent, Never> {
         eventSubject.eraseToAnyPublisher()
     }
     
