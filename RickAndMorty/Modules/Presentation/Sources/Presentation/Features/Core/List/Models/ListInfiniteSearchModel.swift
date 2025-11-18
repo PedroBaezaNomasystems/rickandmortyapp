@@ -7,16 +7,30 @@ public final class ListInfiniteSearchModel {
     public var pages: Int
     public var current: Int
     
-    public init(pages: Int, current: Int, searchModel: ListSearchModel) {
+    public init(searchModel: ListSearchModel) {
         self.searchModel = searchModel
-        self.pages = pages
-        self.current = current
+        self.pages = 1
+        self.current = 1
+    }
+    
+    private func clearLoadingModules() {
+        searchModel.listDataSource.cells.removeAll(where: { $0 is any ListCellLoadingModule })
     }
 }
 
 extension ListInfiniteSearchModel: ListInfiniteModule {
-    public func clearLoadingModules() {
-        searchModel.listDataSource.cells.removeAll(where: { $0 is any ListCellLoadingModule })
+    public var thereAreMorePages: Bool {
+        current < pages
+    }
+    
+    public func prepareFirstPage() {
+        pages = 1
+        current = 1
+        clearModules()
+    }
+    public func prepareNextPage() {
+        current += 1
+        clearLoadingModules()
     }
 }
 
@@ -25,8 +39,8 @@ extension ListInfiniteSearchModel: ListInfiniteRepresentable {
 }
 
 extension ListInfiniteSearchModel: SearchModule {
-    public var searchText: String {
-        searchModel.searchText
+    public var search: String {
+        searchModel.search
     }
     
     public var searchPublisher: Published<String>.Publisher {

@@ -14,7 +14,7 @@ public final class ListSearchModel {
 }
 
 extension ListSearchModel: SearchModule {
-    public var searchText: String {
+    public var search: String {
         searchDataSource.search
     }
     

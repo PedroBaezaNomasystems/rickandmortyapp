@@ -5,7 +5,7 @@ public enum SearchModuleEvent {
 }
 
 public protocol SearchModule: Module {
-    var searchText: String { get }
+    var search: String { get }
     var searchPublisher: Published<String>.Publisher { get }
     var searchEventSignal: AnyPublisher<SearchModuleEvent, Never> { get }
 }

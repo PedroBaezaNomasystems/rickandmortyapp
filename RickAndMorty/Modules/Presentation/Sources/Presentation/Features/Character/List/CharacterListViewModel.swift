@@ -14,7 +14,7 @@ public class CharacterListViewModel: ObservableObject {
     private var getCharactersUseCase: (any GetCharactersUseCase)!
     
     public init(router: Routing?) {
-        self.module = ListInfiniteSearchModel(pages: 1, current: 1, searchModel: ListSearchModel(listModel: ListModel(cells: [])))
+        self.module = ListInfiniteSearchModel(searchModel: ListSearchModel(listModel: ListModel(cells: [])))
         self.router = router
         self.cancellables = []
         
@@ -24,14 +24,14 @@ public class CharacterListViewModel: ObservableObject {
     func initListeners() {
         module.listEventSignal.sink { event in
             switch event {
-            case .onRefresh: self.onReresh()
+            case .onRefresh: self.onFirstPage()
             }
         }
         .store(in: &cancellables)
         
         module.searchEventSignal.sink { event in
             switch event {
-            case .onSubmit: self.onSubmit()
+            case .onSubmit: self.onFirstPage()
             }
         }
         .store(in: &cancellables)
@@ -39,36 +39,22 @@ public class CharacterListViewModel: ObservableObject {
 }
 
 private extension CharacterListViewModel {
-    func onReresh() {
-        onFirstPage()
-    }
-    
-    func onSubmit() {
-        onFirstPage()
-    }
-    
     func onFirstPage() {
         Task {
-            module.pages = 1
-            module.current = 1
-            module.clearModules()
-            
+            module.prepareFirstPage()
             await fetchPage()
         }
     }
     
     func onNextPage() {
         Task {
-            module.current += 1
-            module.clearLoadingModules()
-            
-            guard module.current <= module.pages else { return }
+            module.prepareNextPage()
             await fetchPage()
         }
     }
     
     func fetchPage() async {
-        let result = await getCharactersUseCase.execute(data: (page: module.current, search: module.searchText))
+        let result = await getCharactersUseCase.execute(data: (page: module.current, search: module.search))
         switch result {
         case .success(let response):
             module.pages = response.pages
@@ -93,9 +79,8 @@ private extension CharacterListViewModel {
         
         let loading = CharacterListFactory.makeLoadingModule()
         loading.isLoading.sink { isLoading in
-            if isLoading {
-                self.onNextPage()
-            }
+            guard isLoading, self.module.thereAreMorePages else { return }
+            self.onNextPage()
         }
         .store(in: &cancellables)
         
