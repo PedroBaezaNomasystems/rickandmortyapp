@@ -4,33 +4,29 @@ import SwiftUI
 public final class ListInfiniteSearchModel {
     public var uuid: UUID { searchModel.uuid }
     public let searchModel: ListSearchModel
-    public var pages: Int
-    public var current: Int
+    public let listInfiniteDataSource: ListInfiniteDataSource
     
     public init(searchModel: ListSearchModel) {
         self.searchModel = searchModel
-        self.pages = 1
-        self.current = 1
-    }
-    
-    private func clearLoadingModules() {
-        searchModel.listDataSource.cells.removeAll(where: { $0 is any ListCellLoadingModule })
+        self.listInfiniteDataSource = ListInfiniteDataSource()
     }
 }
 
 extension ListInfiniteSearchModel: ListInfiniteModule {
+    public var current: Int {
+        listInfiniteDataSource.current
+    }
+    
     public var thereAreMorePages: Bool {
-        current < pages
+        listInfiniteDataSource.thereAreMorePages
     }
     
     public func prepareFirstPage() {
-        pages = 1
-        current = 1
-        clearModules()
+        listInfiniteDataSource.prepareFirstPage()
     }
-    public func prepareNextPage() {
-        current += 1
-        clearLoadingModules()
+    
+    public func prepareNextPage(pages: Int) {
+        listInfiniteDataSource.prepareNextPage(pages: pages)
     }
 }
 
@@ -72,7 +68,7 @@ extension ListInfiniteSearchModel: ListModule {
     }
     
     public func appendModules(_ modules: [any Module]) {
-        clearLoadingModules()
+        searchModel.listDataSource.cells.removeAll(where: { $0 is any ListCellLoadingModule })
         searchModel.appendModules(modules)
     }
 }

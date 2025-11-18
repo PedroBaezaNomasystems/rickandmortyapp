@@ -42,13 +42,13 @@ private extension CharacterListViewModel {
     func onFirstPage() {
         Task {
             module.prepareFirstPage()
+            module.clearModules()
             await fetchPage()
         }
     }
     
     func onNextPage() {
         Task {
-            module.prepareNextPage()
             await fetchPage()
         }
     }
@@ -57,7 +57,7 @@ private extension CharacterListViewModel {
         let result = await getCharactersUseCase.execute(data: (page: module.current, search: module.search))
         switch result {
         case .success(let response):
-            module.pages = response.pages
+            module.prepareNextPage(pages: response.pages)
             module.appendModules(makeModules(characters: response.results))
         case .failure:
             break
