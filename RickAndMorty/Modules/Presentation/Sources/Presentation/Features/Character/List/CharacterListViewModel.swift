@@ -79,20 +79,17 @@ private extension CharacterListViewModel {
         Task {
             listModule.prepareFirstPage()
             listModule.clearModules()
-            await fetchPage()
+            await onFetchPage()
         }
     }
     
     func onNextPage() {
         Task {
-            await fetchPage()
+            await onFetchPage()
         }
     }
-}
-
-private extension CharacterListViewModel {
     
-    func fetchPage() async {
+    func onFetchPage() async {
         let result = await getCharactersUseCase.execute(data: (page: listModule.current, search: listModule.search))
         switch result {
         case .failure(let error):
@@ -101,6 +98,9 @@ private extension CharacterListViewModel {
             module = makeListModule(pages: response.pages, characters: response.results)
         }
     }
+}
+
+private extension CharacterListViewModel {
     
     func makeErrorModule(error: String) -> any Module {
         errorModule = CharacterListFactory.makeErrorModule(error: error)
