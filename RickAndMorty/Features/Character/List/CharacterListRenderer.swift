@@ -12,7 +12,7 @@ public struct CharacterListRenderer {
 extension CharacterListRenderer: Renderer {
     public func render(module: any Module) -> AnyView {
         switch module {
-        case (let representable as any ErrorRepresentable):
+        case ( _ as any ErrorRepresentable):
             ErrorRenderer().render(module: module)
         default:
             ListRenderer(cellRenderer: cellRenderer).render(module: module)
