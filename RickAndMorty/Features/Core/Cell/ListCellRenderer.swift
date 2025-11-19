@@ -11,7 +11,7 @@ extension ListCellRenderer: Renderer {
         case (let representable as any ListCellLoadingRepresentable):
             AnyView(ListCellLoadingView(representable: representable))
         default:
-            AnyView(EmptyView())
+            EmptyRenderer().render(module: module)
         }
     }
 }

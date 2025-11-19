@@ -5,72 +5,78 @@ import SwiftUI
 
 @MainActor
 public class CharacterListViewModel: ObservableObject {
-    @Published public var module: any Module {
-        didSet { initListeners() }
+    @Published public var module: any Module = CharacterListFactory.makeEmptyModule()
+    
+    private var errorCancellables: [AnyCancellable]
+    private var errorModule: any ErrorModule = CharacterListFactory.makeErrorModule() {
+        didSet { initErrorListeners() }
+    }
+    
+    private var listCancellables: [AnyCancellable]
+    private var listModule: any ListModule & ListInfiniteModule & SearchModule = CharacterListFactory.makeListModule() {
+        didSet { initListListeners() }
     }
     
     private var router: Routing?
-    private var cancellables: [AnyCancellable]
     
     @Injected(\.getCharactersUseCase)
     private var getCharactersUseCase: (any GetCharactersUseCase)!
     
     public init(router: Routing?) {
-        self.module = CharacterListFactory.makeListModule()
+        self.errorCancellables = []
+        self.listCancellables = []
         self.router = router
-        self.cancellables = []
-        self.initListeners()
+        self.setup()
+    }
+    
+    private func setup() {
+        self.initListListeners()
+        self.initErrorListeners()
+        self.module = makeListModule()
     }
 }
 
 private extension CharacterListViewModel {
-    func initListeners() {
-        cancellables = []
-        
-        if listModule != nil {
-            initListListeners()
-        } else if errorModule != nil {
-            initErrorListeners()
-        }
-    }
     
     func initListListeners() {
-        guard let listModule = listModule else { return }
+        listCancellables = []
+        
         listModule.listEventSignal.sink { event in
             switch event {
             case .onRefresh: self.onFirstPage()
             }
         }
-        .store(in: &cancellables)
+        .store(in: &listCancellables)
         
         listModule.searchEventSignal.sink { event in
             switch event {
             case .onSubmit: self.onFirstPage()
             }
         }
-        .store(in: &cancellables)
+        .store(in: &listCancellables)
     }
     
     func initErrorListeners() {
-        guard let errorModule = errorModule else { return }
+        errorCancellables = []
+        
         errorModule.eventSignal.sink { event in
             switch event {
             case .onRetry: self.onRetry()
             }
         }
-        .store(in: &cancellables)
+        .store(in: &errorCancellables)
     }
 }
 
 private extension CharacterListViewModel {
+    
     func onRetry() {
-        module = CharacterListFactory.makeListModule()
+        module = makeListModule()
         onFirstPage()
     }
     
     func onFirstPage() {
         Task {
-            guard let listModule = listModule else { return }
             listModule.prepareFirstPage()
             listModule.clearModules()
             await fetchPage()
@@ -82,23 +88,39 @@ private extension CharacterListViewModel {
             await fetchPage()
         }
     }
-    
-    func fetchPage() async {
-        guard let listModule = listModule else { return }
-        let result = await getCharactersUseCase.execute(data: (page: listModule.current, search: listModule.search))
-        switch result {
-        case .success(let response):
-            listModule.prepareNextPage(pages: response.pages)
-            
-            listModule.clearLoadingModules()
-            listModule.appendModules(makeListCellModules(characters: response.results))
-        case .failure(let error):
-            module = CharacterListFactory.makeErrorModule(error: error.localizedDescription)
-        }
-    }
 }
 
 private extension CharacterListViewModel {
+    
+    func fetchPage() async {
+        let result = await getCharactersUseCase.execute(data: (page: listModule.current, search: listModule.search))
+        switch result {
+        case .failure(let error):
+            module = makeErrorModule(error: error.localizedDescription)
+        case .success(let response):
+            module = makeListModule(pages: response.pages, characters: response.results)
+        }
+    }
+    
+    func makeErrorModule(error: String) -> any Module {
+        errorModule = CharacterListFactory.makeErrorModule(error: error)
+        return errorModule
+    }
+    
+    func makeListModule() -> any Module {
+        listModule = CharacterListFactory.makeListModule()
+        return listModule
+    }
+    
+    func makeListModule(pages: Int, characters: [CharacterEntity]) -> any Module {
+        listModule.prepareNextPage(pages: pages)
+        
+        listModule.clearLoadingModules()
+        listModule.appendModules(makeListCellModules(characters: characters))
+        
+        return listModule
+    }
+    
     func makeListCellModules(characters: [CharacterEntity]) -> [any Module] {
         var modules: [any Module] = []
         
@@ -109,20 +131,19 @@ private extension CharacterListViewModel {
                 case .onTapCharacter(let id): self.router?.navigate(to: .character("\(id)"))
                 }
             }
-            .store(in: &cancellables)
+            .store(in: &listCancellables)
         }
         
         let loading = CharacterListCellFactory.makeLoadingModule()
         loading.isLoading.sink { isLoading in
-            guard let listModule = self.listModule else { return }
-            guard isLoading, listModule.thereAreMorePages else {
-                listModule.clearLoadingModules()
+            guard isLoading, self.listModule.thereAreMorePages else {
+                self.listModule.clearLoadingModules()
                 return
             }
             
             self.onNextPage()
         }
-        .store(in: &cancellables)
+        .store(in: &listCancellables)
         
         modules.append(contentsOf: characters)
         modules.append(loading)

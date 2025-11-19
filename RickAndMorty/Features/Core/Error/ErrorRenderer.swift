@@ -11,7 +11,7 @@ extension ErrorRenderer: Renderer {
         case (let representable as any ErrorRepresentable):
             AnyView(ErrorView(representable: representable))
         default:
-            AnyView(EmptyView())
+            EmptyRenderer().render(module: module)
         }
     }
 }
