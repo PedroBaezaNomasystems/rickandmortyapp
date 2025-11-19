@@ -5,7 +5,9 @@ import SwiftUI
 
 @MainActor
 public class CharacterListViewModel: ObservableObject {
-    @Published public var module: any ListModule & ListInfiniteModule & SearchModule
+    @Published public var module: any Module {
+        didSet { initListeners() }
+    }
     
     private var router: Routing?
     private var cancellables: [AnyCancellable]
@@ -14,24 +16,46 @@ public class CharacterListViewModel: ObservableObject {
     private var getCharactersUseCase: (any GetCharactersUseCase)!
     
     public init(router: Routing?) {
-        self.module = ListInfiniteSearchModel(searchModel: ListSearchModel(listModel: ListModel(cells: [])))
+        self.module = CharacterListFactory.makeErrorModule(error: "Something went wrong")
         self.router = router
         self.cancellables = []
+        self.initListeners()
+    }
+}
+
+private extension CharacterListViewModel {
+    func initListeners() {
+        cancellables = []
         
-        initListeners()
+        if listModule != nil {
+            initListListeners()
+        } else if errorModule != nil {
+            initErrorListeners()
+        }
     }
     
-    func initListeners() {
-        module.listEventSignal.sink { event in
+    func initListListeners() {
+        guard let listModule = listModule else { return }
+        listModule.listEventSignal.sink { event in
             switch event {
             case .onRefresh: self.onFirstPage()
             }
         }
         .store(in: &cancellables)
         
-        module.searchEventSignal.sink { event in
+        listModule.searchEventSignal.sink { event in
             switch event {
             case .onSubmit: self.onFirstPage()
+            }
+        }
+        .store(in: &cancellables)
+    }
+    
+    func initErrorListeners() {
+        guard let errorModule = errorModule else { return }
+        errorModule.eventSignal.sink { event in
+            switch event {
+            case .onRetry: self.onRetry()
             }
         }
         .store(in: &cancellables)
@@ -39,10 +63,16 @@ public class CharacterListViewModel: ObservableObject {
 }
 
 private extension CharacterListViewModel {
+    func onRetry() {
+        module = CharacterListFactory.makeListModule()
+        onFirstPage()
+    }
+    
     func onFirstPage() {
         Task {
-            module.prepareFirstPage()
-            module.clearModules()
+            guard let listModule = listModule else { return }
+            listModule.prepareFirstPage()
+            listModule.clearModules()
             await fetchPage()
         }
     }
@@ -54,35 +84,39 @@ private extension CharacterListViewModel {
     }
     
     func fetchPage() async {
-        let result = await getCharactersUseCase.execute(data: (page: module.current, search: module.search))
+        guard let listModule = listModule else { return }
+        let result = await getCharactersUseCase.execute(data: (page: listModule.current, search: listModule.search))
         switch result {
         case .success(let response):
-            module.prepareNextPage(pages: response.pages)
+            listModule.prepareNextPage(pages: response.pages)
             
-            module.clearLoadingModules()
-            module.appendModules(makeModules(characters: response.results))
-        case .failure:
-            break
+            listModule.clearLoadingModules()
+            listModule.appendModules(makeListCellModules(characters: response.results))
+        case .failure(let error):
+            module = CharacterListFactory.makeErrorModule(error: error.localizedDescription)
         }
     }
-    
-    func makeModules(characters: [CharacterEntity]) -> [any Module] {
+}
+
+private extension CharacterListViewModel {
+    func makeListCellModules(characters: [CharacterEntity]) -> [any Module] {
         var modules: [any Module] = []
         
-        let characters = CharacterListFactory.makeCharactersModules(characters)
+        let characters = CharacterListCellFactory.makeCharactersModules(characters)
         characters.forEach { cell in
             cell.eventSignal.sink { event in
                 switch event {
-                case .tapCharacter(let id): self.router?.navigate(to: .character("\(id)"))
+                case .onTapCharacter(let id): self.router?.navigate(to: .character("\(id)"))
                 }
             }
             .store(in: &cancellables)
         }
         
-        let loading = CharacterListFactory.makeLoadingModule()
+        let loading = CharacterListCellFactory.makeLoadingModule()
         loading.isLoading.sink { isLoading in
-            guard isLoading, self.module.thereAreMorePages else {
-                self.module.clearLoadingModules()
+            guard let listModule = self.listModule else { return }
+            guard isLoading, listModule.thereAreMorePages else {
+                listModule.clearLoadingModules()
                 return
             }
             

@@ -7,10 +7,6 @@ public final class CharacterListCellModel {
     public let name: String
     public let image: String
     public let status: String
-    public var eventSignal: AnyPublisher<CharacterListCellModuleEvent, Never> {
-        eventSubject.eraseToAnyPublisher()
-    }
-    
     private let eventSubject = PassthroughSubject<CharacterListCellModuleEvent, Never>()
     
     public init(id: Int, name: String, image: String, status: String) {
@@ -22,11 +18,14 @@ public final class CharacterListCellModel {
     }
 }
 
-extension CharacterListCellModel: CharacterListCellModule { }
-
-extension CharacterListCellModel: CharacterListCellRepresentable {
-    public func onTapCharacter() {
-        eventSubject.send(.tapCharacter(id))
+extension CharacterListCellModel: CharacterListCellModule {
+    public var eventSignal: AnyPublisher<CharacterListCellModuleEvent, Never> {
+        eventSubject.eraseToAnyPublisher()
     }
 }
 
+extension CharacterListCellModel: CharacterListCellRepresentable {
+    public func onTapCharacter() {
+        eventSubject.send(.onTapCharacter(id))
+    }
+}

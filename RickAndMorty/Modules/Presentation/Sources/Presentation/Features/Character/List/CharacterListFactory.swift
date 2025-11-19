@@ -2,18 +2,11 @@ import Combine
 import Domain
 
 final class CharacterListFactory {
-    static func makeLoadingModule() -> any ListCellLoadingModule {
-        ListCellLoadingModel()
+    static func makeListModule() -> any Module {
+        ListInfiniteSearchModel(searchModel: ListSearchModel(listModel: ListModel(cells: [])))
     }
     
-    static func makeCharactersModules(_ characters: [CharacterEntity]) -> [any CharacterListCellModule] {
-        characters.map { character in
-            CharacterListCellModel(
-                id: character.id,
-                name: character.name,
-                image: character.image,
-                status: character.status
-            )
-        }
+    static func makeErrorModule(error: String) -> any Module {
+        ErrorModel(error: error)
     }
 }

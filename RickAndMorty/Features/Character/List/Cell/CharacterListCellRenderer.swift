@@ -5,8 +5,7 @@ public struct CharacterListCellRenderer {
     
 }
 
-extension CharacterListCellRenderer: Renderer {
-    
+extension CharacterListCellRenderer: Renderer {    
     public func render(module: any Module) -> AnyView {
         switch module {
         case (let representable as any CharacterListCellRepresentable):
