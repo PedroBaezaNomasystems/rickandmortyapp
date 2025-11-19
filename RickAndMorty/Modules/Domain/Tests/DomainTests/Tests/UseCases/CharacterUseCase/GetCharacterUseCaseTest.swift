@@ -38,7 +38,7 @@ final class GetCharacterUseCaseTests: XCTestCase {
         let expected = CharacterEntityFactory.makeCharacterEntity()
         await repository.setMockResponse(expected)
         
-        let result = await sut.execute(data: "0")
+        let result = await sut.execute(data: 0)
         
         switch result {
         case .success(let character):
@@ -51,7 +51,7 @@ final class GetCharacterUseCaseTests: XCTestCase {
     func test_execute_returnsError_whenRepositoryFails() async {
         await repository.setMockError(RepositoryError.notFound)
         
-        let result = await sut.execute(data: "0")
+        let result = await sut.execute(data: 0)
         
         switch result {
         case .success(let character):

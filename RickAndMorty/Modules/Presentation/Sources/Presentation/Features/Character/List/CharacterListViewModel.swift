@@ -5,7 +5,7 @@ import SwiftUI
 
 @MainActor
 public class CharacterListViewModel: ObservableObject {
-    @Published public var module: any Module = CharacterListFactory.makeEmptyModule()
+    @Published public var module: any Module
     
     private var listCancellables: [AnyCancellable]
     private var listModule: any ListModule & ListInfiniteModule & SearchModule {
@@ -23,11 +23,13 @@ public class CharacterListViewModel: ObservableObject {
     private var getCharactersUseCase: (any GetCharactersUseCase)!
     
     public init(router: Routing?) {
+        self.module = CharacterListFactory.makeEmptyModule()
         self.listCancellables = []
         self.listModule = CharacterListFactory.makeListModule()
         self.errorCancellables = []
         self.errorModule = CharacterListFactory.makeErrorModule()
         self.router = router
+        
         self.setup()
     }
     
@@ -135,7 +137,7 @@ private extension CharacterListViewModel {
         characters.forEach { cell in
             cell.eventSignal.sink { event in
                 switch event {
-                case .onTapCharacter(let id): self.router?.navigate(to: .character("\(id)"))
+                case .onTapCharacter(let id): self.router?.navigate(to: .character(id))
                 }
             }
             .store(in: &listCancellables)

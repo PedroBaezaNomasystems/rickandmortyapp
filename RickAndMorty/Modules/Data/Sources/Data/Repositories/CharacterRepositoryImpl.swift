@@ -30,7 +30,7 @@ public actor CharacterRepositoryImpl: CharacterRepository {
         }
     }
     
-    public func getCharacter(characterId: String) async throws(RepositoryError) -> CharacterEntity {
+    public func getCharacter(characterId: Int) async throws(RepositoryError) -> CharacterEntity {
         
         do {
             let response: CharacterResponse = try await networkService.get(resource: "character/\(characterId)", params: nil, bearer: nil)

@@ -8,5 +8,5 @@
 public protocol CharacterRepository: Actor {
     
     func getCharacters(page: Int, search: String) async throws -> ListEntity<CharacterEntity>
-    func getCharacter(characterId: String) async throws -> CharacterEntity
+    func getCharacter(characterId: Int) async throws -> CharacterEntity
 }

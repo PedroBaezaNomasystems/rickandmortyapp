@@ -25,7 +25,7 @@ final class CharacterDetailViewModelTest: XCTestCase {
         Container.shared.manager.push()
         Container.shared.getCharacterUseCase.register { mock }
         
-        sut = CharacterDetailViewModel(router: nil, characterId: "1")
+        sut = CharacterDetailViewModel(router: nil, characterId: 1)
     }
     
     override func tearDown() async throws {

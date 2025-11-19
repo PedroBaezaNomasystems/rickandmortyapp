@@ -13,7 +13,7 @@ struct CharacterDetailView: View {
     
     @StateObject var viewModel: CharacterDetailViewModel
     
-    init(router: Routing? = nil, characterId: String = "1") {
+    init(router: Routing? = nil, characterId: Int = 1) {
         _viewModel = StateObject(wrappedValue: CharacterDetailViewModel(router: router, characterId: characterId))
     }
     

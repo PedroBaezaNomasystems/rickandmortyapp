@@ -9,12 +9,12 @@ public class CharacterDetailViewModel: ObservableObject {
     @Published public var character: CharacterEntity? = nil
     
     private var router: Routing?
-    private var characterId: String
+    private var characterId: Int
     
     @Injected(\.getCharacterUseCase)
     private var getCharacterUseCase: (any GetCharacterUseCase)!
     
-    public init(router: Routing?, characterId: String) {
+    public init(router: Routing?, characterId: Int) {
         self.router = router
         self.characterId = characterId
     }

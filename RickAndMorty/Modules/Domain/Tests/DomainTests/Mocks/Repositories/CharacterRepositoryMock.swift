@@ -43,7 +43,7 @@ public actor CharacterRepositoryMock: CharacterRepository, Sendable {
         fatalError("CharacterRepositoryMock not configured. Call setMockError or setMockResponse first.")
     }
     
-    public func getCharacter(characterId: String) async throws -> CharacterEntity {
+    public func getCharacter(characterId: Int) async throws -> CharacterEntity {
         if let error = mockError {
             throw error
         }

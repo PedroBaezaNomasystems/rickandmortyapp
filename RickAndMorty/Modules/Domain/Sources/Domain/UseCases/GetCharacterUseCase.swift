@@ -10,7 +10,7 @@ import Factory
 
 public protocol GetCharacterUseCase: UseCase where
 
-    InputType == String,
+    InputType == Int,
     ResultType == CharacterEntity {
 }
 
@@ -21,7 +21,7 @@ public actor GetCharacterUseCaseImpl: GetCharacterUseCase {
     
     public init() {}
     
-    public func execute(data: String) async -> Result<CharacterEntity, UseCaseError> {
+    public func execute(data: Int) async -> Result<CharacterEntity, UseCaseError> {
         
         do {
             let character = try await repository.getCharacter(characterId: data)

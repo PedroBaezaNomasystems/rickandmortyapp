@@ -22,7 +22,7 @@ public actor GetCharacterUseCaseMock: GetCharacterUseCase, Sendable {
         self.mockResponse = response
     }
     
-    public func execute(data: String) async -> Result<CharacterEntity, UseCaseError> {
+    public func execute(data: Int) async -> Result<CharacterEntity, UseCaseError> {
         if let error = mockError {
             return .failure(error)
         }
