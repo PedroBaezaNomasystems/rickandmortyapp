@@ -16,7 +16,7 @@ public class CharacterListViewModel: ObservableObject {
     private var getCharactersUseCase: (any GetCharactersUseCase)!
     
     public init(router: Routing?) {
-        self.module = CharacterListFactory.makeErrorModule(error: "Something went wrong")
+        self.module = CharacterListFactory.makeListModule()
         self.router = router
         self.cancellables = []
         self.initListeners()
