@@ -4,39 +4,19 @@ import SwiftUI
 public final class ListInfiniteModel {
     public var uuid: UUID { listModel.uuid }
     public let listModel: ListModel
-    public let listInfiniteDataSource: ListInfiniteDataSource
     
     public init(listModel: ListModel) {
         self.listModel = listModel
-        self.listInfiniteDataSource = ListInfiniteDataSource()
     }
 }
 
 extension ListInfiniteModel: ListInfiniteModule {
-    public var current: Int {
-        listInfiniteDataSource.current
-    }
-    
-    public var thereAreMorePages: Bool {
-        listInfiniteDataSource.thereAreMorePages
-    }
-    
-    public func prepareFirstPage() {
-        listInfiniteDataSource.prepareFirstPage()
-    }
-    
-    public func prepareNextPage(pages: Int) {
-        listInfiniteDataSource.prepareNextPage(pages: pages)
-    }
-    
     public func clearLoadingModules() {
         listModel.listDataSource.cells.removeAll(where: { $0 is any ListCellLoadingModule })
     }
 }
 
-extension ListInfiniteModel: ListInfiniteRepresentable {
-    
-}
+extension ListInfiniteModel: ListInfiniteRepresentable { }
 
 extension ListInfiniteModel: ListModule {
     public var listEventSignal: AnyPublisher<ListModuleEvent, Never> {

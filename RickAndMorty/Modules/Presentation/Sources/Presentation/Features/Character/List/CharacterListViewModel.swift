@@ -7,14 +7,14 @@ import SwiftUI
 public class CharacterListViewModel: ObservableObject {
     @Published public var module: any Module = CharacterListFactory.makeEmptyModule()
     
-    private var errorCancellables: [AnyCancellable]
-    private var errorModule: any ErrorModule = CharacterListFactory.makeErrorModule() {
-        didSet { initErrorListeners() }
+    private var listCancellables: [AnyCancellable]
+    private var listModule: any ListModule & ListInfiniteModule & SearchModule {
+        didSet { initListListeners() }
     }
     
-    private var listCancellables: [AnyCancellable]
-    private var listModule: any ListModule & ListInfiniteModule & SearchModule = CharacterListFactory.makeListModule() {
-        didSet { initListListeners() }
+    private var errorCancellables: [AnyCancellable]
+    private var errorModule: any ErrorModule {
+        didSet { initErrorListeners() }
     }
     
     private var router: Routing?
@@ -23,8 +23,10 @@ public class CharacterListViewModel: ObservableObject {
     private var getCharactersUseCase: (any GetCharactersUseCase)!
     
     public init(router: Routing?) {
-        self.errorCancellables = []
         self.listCancellables = []
+        self.listModule = CharacterListFactory.makeListModule()
+        self.errorCancellables = []
+        self.errorModule = CharacterListFactory.makeErrorModule()
         self.router = router
         self.setup()
     }
@@ -77,8 +79,8 @@ private extension CharacterListViewModel {
     
     func onFirstPage() {
         Task {
-            listModule.prepareFirstPage()
             listModule.clearModules()
+            await getCharactersUseCase.reset()
             await onFetchPage()
         }
     }
@@ -90,10 +92,13 @@ private extension CharacterListViewModel {
     }
     
     func onFetchPage() async {
-        let result = await getCharactersUseCase.execute(data: (page: listModule.current, search: listModule.search))
+        let result = await getCharactersUseCase.execute(data: listModule.search)
         switch result {
         case .failure(let error):
-            module = makeErrorModule(error: error.localizedDescription)
+            switch error {
+            case .noMoreData: module = makeListNoMoreDataModule()
+            case .generic: module = makeErrorModule(error: error.localizedDescription)
+            }
         case .success(let response):
             module = makeListModule(pages: response.pages, characters: response.results)
         }
@@ -112,12 +117,14 @@ private extension CharacterListViewModel {
         return listModule
     }
     
+    func makeListNoMoreDataModule() -> any Module {
+        listModule.clearLoadingModules()
+        return listModule
+    }
+    
     func makeListModule(pages: Int, characters: [CharacterEntity]) -> any Module {
-        listModule.prepareNextPage(pages: pages)
-        
         listModule.clearLoadingModules()
         listModule.appendModules(makeListCellModules(characters: characters))
-        
         return listModule
     }
     
@@ -136,11 +143,7 @@ private extension CharacterListViewModel {
         
         let loading = CharacterListCellFactory.makeLoadingModule()
         loading.isLoading.sink { isLoading in
-            guard isLoading, self.listModule.thereAreMorePages else {
-                self.listModule.clearLoadingModules()
-                return
-            }
-            
+            guard isLoading else { return }
             self.onNextPage()
         }
         .store(in: &listCancellables)

@@ -10,6 +10,7 @@ import Foundation
 public enum UseCaseError: Error, Equatable {
     
     case generic
+    case noMoreData
 }
 
 public protocol UseCase: Actor {
