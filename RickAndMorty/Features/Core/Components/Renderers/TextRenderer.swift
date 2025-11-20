@@ -1,15 +1,15 @@
 import SwiftUI
 import Presentation
 
-public struct CharacterDetailModuleRenderer {
+public struct TextRenderer {
     
 }
 
-extension CharacterDetailModuleRenderer: Renderer {
+extension TextRenderer: Renderer {
     public func render(module: any Module) -> AnyView {
         switch module {
-        case ( _ as any TextRepresentable):
-            TextRenderer().render(module: module)
+        case (let representable as any TextRepresentable):
+            AnyView(TextView(representable: representable))
         default:
             EmptyRenderer().render(module: module)
         }

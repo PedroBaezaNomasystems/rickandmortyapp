@@ -17,6 +17,10 @@ extension ScrollModel: ScrollModule {
         eventSubject.eraseToAnyPublisher()
     }
     
+    public func clearModules() {
+        scrollDataSource.modules = []
+    }
+    
     public func appendModule(_ module: any Module) {
         scrollDataSource.modules.append(module)
     }
