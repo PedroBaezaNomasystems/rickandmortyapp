@@ -14,3 +14,20 @@ final class CharacterListFactory {
         ErrorModel(error: error)
     }
 }
+
+extension CharacterListFactory {
+    static func makeCellLoadingModule() -> any CellLoadingModule {
+        CellLoadingModel()
+    }
+    
+    static func makeCellCharactersModules(_ characters: [CharacterEntity]) -> [any CharacterCellModule] {
+        characters.map { character in
+            CharacterCellModel(
+                id: character.id,
+                name: character.name,
+                image: character.image,
+                status: character.status
+            )
+        }
+    }
+}

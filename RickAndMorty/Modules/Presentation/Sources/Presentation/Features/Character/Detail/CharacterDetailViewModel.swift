@@ -102,12 +102,12 @@ private extension CharacterDetailViewModel {
     func makeScrollModule(character: CharacterEntity) -> any Module {
         scrollModule.clearModules()
         
-        scrollModule.appendModule(CharacterDetailModuleFactory.makeTextModule(text: character.name))
-        scrollModule.appendModule(CharacterDetailModuleFactory.makeTextModule(text: character.status))
-        scrollModule.appendModule(CharacterDetailModuleFactory.makeTextModule(text: character.species))
-        scrollModule.appendModule(CharacterDetailModuleFactory.makeTextModule(text: character.gender))
-        scrollModule.appendModule(CharacterDetailModuleFactory.makeTextModule(text: character.origin))
-        scrollModule.appendModule(CharacterDetailModuleFactory.makeTextModule(text: character.location))
+        scrollModule.appendModule(CharacterDetailFactory.makeTextModule(text: character.name))
+        scrollModule.appendModule(CharacterDetailFactory.makeTextModule(text: character.status))
+        scrollModule.appendModule(CharacterDetailFactory.makeTextModule(text: character.species))
+        scrollModule.appendModule(CharacterDetailFactory.makeTextModule(text: character.gender))
+        scrollModule.appendModule(CharacterDetailFactory.makeTextModule(text: character.origin))
+        scrollModule.appendModule(CharacterDetailFactory.makeTextModule(text: character.location))
         
         return scrollModule
     }

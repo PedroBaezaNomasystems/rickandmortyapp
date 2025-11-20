@@ -4,8 +4,8 @@ import SwiftUI
 struct AppView: View {
     @StateObject var router: Router = Router()
     
-    private var listRenderer = CharacterListRenderer(cellRenderer: CharacterListCellRenderer())
-    private var detailRenderer = CharacterDetailRenderer(moduleRenderer: CharacterDetailModuleRenderer())
+    private var listRenderer = CharacterListRenderer(cellRenderer: CharacterCellRenderer())
+    private var detailRenderer = CharacterDetailRenderer(moduleRenderer: ComponentRenderer())
     
     var body: some View {
         NavigationStack(path: $router.navPath) {

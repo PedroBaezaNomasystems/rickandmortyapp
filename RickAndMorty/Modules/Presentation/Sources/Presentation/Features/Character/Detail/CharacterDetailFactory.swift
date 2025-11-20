@@ -14,3 +14,10 @@ final class CharacterDetailFactory {
         ErrorModel(error: error)
     }
 }
+
+extension CharacterDetailFactory {
+    
+    static func makeTextModule(text: String) -> any TextModule {
+        TextModel(text: text)
+    }
+}

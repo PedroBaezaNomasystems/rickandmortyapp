@@ -53,7 +53,7 @@ final class CharacterListViewModelTest: XCTestCase {
         let after = sut.module as! any ListRepresentable
         XCTAssertFalse(after.listDataSource.cells.isEmpty)
         
-        let count = after.listDataSource.cells.count { $0 is any CharacterListCellModule }
+        let count = after.listDataSource.cells.count { $0 is any CharacterCellModule }
         XCTAssertEqual(count, expected.results.count)
     }
     
