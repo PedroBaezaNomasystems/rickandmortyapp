@@ -122,6 +122,7 @@ private extension CharacterDetailViewModel {
         scrollModule = CharacterDetailFactory.makeScrollModule()
         
         scrollModule.appendModule(CharacterDetailFactory.makeTextModule(text: character.name))
+        scrollModule.appendModule(CharacterDetailFactory.makeUrlImageModule(url: character.image))
         scrollModule.appendModule(CharacterDetailFactory.makeTextModule(text: character.status))
         scrollModule.appendModule(CharacterDetailFactory.makeTextModule(text: character.species))
         scrollModule.appendModule(CharacterDetailFactory.makeTextModule(text: character.gender))

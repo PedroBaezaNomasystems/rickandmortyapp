@@ -10,6 +10,8 @@ extension ComponentRenderer: Renderer {
         switch module {
         case (let representable as any TextRepresentable):
             AnyView(TextView(representable: representable))
+        case (let representable as any UrlImageRepresentable):
+            AnyView(UrlImageView(representable: representable))
         case (let representable as any EmptyRepresentable):
             AnyView(EmptyView(representable: representable))
         default:

@@ -25,4 +25,8 @@ extension CharacterDetailFactory {
     static func makeTextModule(text: String) -> any TextModule {
         TextModel(text: text)
     }
+    
+    static func makeUrlImageModule(url: String) -> any UrlImageModule {
+        UrlImageModel(url: url)
+    }
 }
