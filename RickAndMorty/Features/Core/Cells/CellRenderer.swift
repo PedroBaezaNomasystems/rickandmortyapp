@@ -11,7 +11,7 @@ extension CellRenderer: Renderer {
         case (let representable as any CellLoadingRepresentable):
             AnyView(CellLoadingView(representable: representable))
         default:
-            ComponentRenderer().render(module: module)
+            AnyView(SwiftUI.EmptyView())
         }
     }
 }

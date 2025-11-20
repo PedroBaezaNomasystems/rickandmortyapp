@@ -17,7 +17,7 @@ extension ListRenderer: Renderer {
         case (let representable as any ListRepresentable):
             AnyView(ListView(representable: representable, cellRenderer: cellRenderer))
         default:
-            ComponentRenderer().render(module: module)
+            AnyView(SwiftUI.EmptyView())
         }
     }
 }

@@ -1,7 +1,7 @@
 import SwiftUI
 import Presentation
 
-public struct CharacterDetailRenderer {
+public struct ScrollRenderer {
     let moduleRenderer: Renderer
     
     public init(moduleRenderer: Renderer) {
@@ -9,13 +9,13 @@ public struct CharacterDetailRenderer {
     }
 }
 
-extension CharacterDetailRenderer: Renderer {
+extension ScrollRenderer: Renderer {
     public func render(module: any Module) -> AnyView {
         switch module {
-        case ( _ as any ErrorRepresentable):
-            ErrorRenderer().render(module: module)
+        case (let representable as any ScrollRepresentable):
+            AnyView(ScrollView(representable: representable, moduleRenderer: moduleRenderer))
         default:
-            ScrollRenderer(moduleRenderer: moduleRenderer).render(module: module)
+            AnyView(SwiftUI.EmptyView())
         }
     }
 }

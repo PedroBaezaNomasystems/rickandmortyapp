@@ -11,7 +11,7 @@ extension ErrorRenderer: Renderer {
         case (let representable as any ErrorRepresentable):
             AnyView(ErrorView(representable: representable))
         default:
-            ComponentRenderer().render(module: module)
+            AnyView(SwiftUI.EmptyView())
         }
     }
 }
