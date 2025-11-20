@@ -7,6 +7,5 @@ public enum ScrollModuleEvent {
 
 public protocol ScrollModule: Module {
     var scrollEventSignal: AnyPublisher<ScrollModuleEvent, Never> { get }
-    func clearModules()
     func appendModule(_ module: any Module)
 }

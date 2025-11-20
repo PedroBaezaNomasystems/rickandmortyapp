@@ -6,6 +6,10 @@ final class CharacterDetailFactory {
         EmptyModel()
     }
     
+    static func makeLoadingModule() -> any LoadingModule {
+        LoadingModel()
+    }
+    
     static func makeScrollModule(modules: [any Module] = []) -> any ScrollModule {
         ScrollModel(modules: modules)
     }

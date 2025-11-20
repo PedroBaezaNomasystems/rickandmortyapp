@@ -18,6 +18,8 @@ extension ScreenRenderer: Renderer {
         case ( _ as any ListRepresentable):
             guard let cellRenderer = childrenRenderer else { fatalError() }
             return ListRenderer(cellRenderer: cellRenderer).render(module: module)
+        case ( _ as any LoadingRepresentable):
+            return LoadingRenderer().render(module: module)
         case ( _ as any ErrorRepresentable):
             return ErrorRenderer().render(module: module)
         default:

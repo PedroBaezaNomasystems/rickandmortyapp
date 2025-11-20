@@ -9,7 +9,12 @@ public class CharacterDetailViewModel: ObservableObject {
     
     private var scrollCancellables: [AnyCancellable]
     private var scrollModule: any ScrollModule {
-        didSet { initListListeners() }
+        didSet { initScrollListeners() }
+    }
+    
+    private var loadingCancellables: [AnyCancellable]
+    private var loadingModule: any LoadingModule {
+        didSet { initLoadingListeners() }
     }
     
     private var errorCancellables: [AnyCancellable]
@@ -27,6 +32,8 @@ public class CharacterDetailViewModel: ObservableObject {
         self.module = CharacterDetailFactory.makeEmptyModule()
         self.scrollCancellables = []
         self.scrollModule = CharacterDetailFactory.makeScrollModule()
+        self.loadingCancellables = []
+        self.loadingModule = CharacterDetailFactory.makeLoadingModule()
         self.errorCancellables = []
         self.errorModule = CharacterDetailFactory.makeErrorModule()
         self.characterId = characterId
@@ -36,24 +43,36 @@ public class CharacterDetailViewModel: ObservableObject {
     }
     
     private func setup() {
-        self.initListListeners()
+        self.initScrollListeners()
+        self.initLoadingListeners()
         self.initErrorListeners()
-        self.module = makeScrollModule()
+        self.module = makeLoadingModule()
     }
 }
 
 private extension CharacterDetailViewModel {
     
-    func initListListeners() {
+    func initScrollListeners() {
         scrollCancellables = []
         
         scrollModule.scrollEventSignal.sink { event in
             switch event {
-            case .onAppear: self.onRefresh()
-            case .onRefresh: self.onRefresh()
+            case .onAppear: break
+            case .onRefresh: self.module = self.makeLoadingModule()
             }
         }
         .store(in: &scrollCancellables)
+    }
+    
+    func initLoadingListeners() {
+        loadingCancellables = []
+        
+        loadingModule.loadingEventSignal.sink { event in
+            switch event {
+            case .onAppear: self.onAppear()
+            }
+        }
+        .store(in: &loadingCancellables)
     }
     
     func initErrorListeners() {
@@ -61,7 +80,7 @@ private extension CharacterDetailViewModel {
         
         errorModule.eventSignal.sink { event in
             switch event {
-            case .onRetry: self.onRefresh()
+            case .onRetry: self.module = self.makeLoadingModule()
             }
         }
         .store(in: &errorCancellables)
@@ -70,7 +89,7 @@ private extension CharacterDetailViewModel {
 
 private extension CharacterDetailViewModel {
     
-    func onRefresh() {
+    func onAppear() {
         Task {
             await onFetchData()
         }
@@ -94,13 +113,13 @@ private extension CharacterDetailViewModel {
         return errorModule
     }
     
-    func makeScrollModule() -> any Module {
-        scrollModule = CharacterDetailFactory.makeScrollModule()
-        return scrollModule
+    func makeLoadingModule() -> any Module {
+        loadingModule = CharacterDetailFactory.makeLoadingModule()
+        return loadingModule
     }
     
     func makeScrollModule(character: CharacterEntity) -> any Module {
-        scrollModule.clearModules()
+        scrollModule = CharacterDetailFactory.makeScrollModule()
         
         scrollModule.appendModule(CharacterDetailFactory.makeTextModule(text: character.name))
         scrollModule.appendModule(CharacterDetailFactory.makeTextModule(text: character.status))
