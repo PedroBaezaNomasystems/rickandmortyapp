@@ -7,6 +7,7 @@
 
 import XCTest
 import Factory
+import Combine
 import Domain
 @testable import Presentation
 
@@ -36,98 +37,72 @@ final class CharacterListViewModelTest: XCTestCase {
         try await super.tearDown()
     }
     
-    func test_execute_onRefresh_whenUseCaseSucceeds() async {
+    func test_onRefresh_waitsForModuleUpdate() async {
         let expected = CharacterEntityFactory.makeListEntity()
+        let testExpectation = testExpectationCellsNotEmptyModule()
         await useCase.setMockResponse(expected)
         
-        /*XCTAssertFalse(sut.isError)
-        XCTAssertTrue(sut.characters.isEmpty)
+        XCTAssertNotNil(sut.module as? any ListRepresentable)
+        let before = sut.module as! any ListRepresentable
+        XCTAssertTrue(before.listDataSource.cells.isEmpty)
         
-        await sut.onRefresh()
+        before.onRefresh()
+        await fulfillment(of: [testExpectation], timeout: 1)
         
-        XCTAssertFalse(sut.isError)
-        XCTAssertFalse(sut.characters.isEmpty)
-        XCTAssert(sut.characters.count == 1)
-        CharacterEntityAssert.assertCharacter(sut.characters[0], equals: expected.results[0])*/
+        XCTAssertNotNil(sut.module as? any ListRepresentable)
+        let after = sut.module as! any ListRepresentable
+        XCTAssertFalse(after.listDataSource.cells.isEmpty)
+        
+        let count = after.listDataSource.cells.count { $0 is any CharacterListCellModule }
+        XCTAssertEqual(count, expected.results.count)
     }
+    
     
     func test_execute_onRefresh_whenUseCaseFails() async {
+        let testExpectation = testExpectationErrorModule()
         await useCase.setMockError(UseCaseError.generic)
         
-        /*XCTAssertFalse(sut.isError)
-        XCTAssertTrue(sut.characters.isEmpty)
+        XCTAssertNotNil(sut.module as? any ListRepresentable)
+        let before = sut.module as! any ListRepresentable
+        XCTAssertTrue(before.listDataSource.cells.isEmpty)
         
-        await sut.onRefresh()
+        before.onRefresh()
+        await fulfillment(of: [testExpectation], timeout: 1)
         
-        XCTAssertTrue(sut.isError)
-        XCTAssertTrue(sut.characters.isEmpty)*/
+        XCTAssertNotNil(sut.module as? any ErrorRepresentable)
+    }
+}
+
+private extension CharacterListViewModelTest {
+    
+    func testExpectationCellsNotEmptyModule() -> XCTestExpectation {
+        waitUntil(description: "testExpectationCellsNotEmptyModule") {
+            if let list = self.sut.module as? any ListRepresentable {
+                return !list.listDataSource.cells.isEmpty
+            }
+            return false
+        }
+    }
+
+    
+    func testExpectationErrorModule() -> XCTestExpectation {
+        waitUntil(description: "testExpectationErrorModule") {
+            self.sut.module is any ErrorRepresentable
+        }
     }
     
-    func test_execute_onRequestMoreCharacters_whenTwoPages() async {
-        let expected = CharacterEntityFactory.makeListTwoPagesEntity()
-        await useCase.setMockResponse(expected)
-        
-        /*XCTAssertFalse(sut.isError)
-        XCTAssertTrue(sut.characters.isEmpty)
-        
-        await sut.onRefresh()
-        
-        XCTAssertFalse(sut.isError)
-        XCTAssertFalse(sut.characters.isEmpty)
-        XCTAssert(sut.characters.count == 1)
-        CharacterEntityAssert.assertCharacter(sut.characters[0], equals: expected.results[0])
-        
-        await sut.onRequestMoreCharacters()
-        
-        XCTAssertFalse(sut.isError)
-        XCTAssertFalse(sut.characters.isEmpty)
-        XCTAssert(sut.characters.count == 2)
-        CharacterEntityAssert.assertCharacter(sut.characters[0], equals: expected.results[0])
-        CharacterEntityAssert.assertCharacter(sut.characters[1], equals: expected.results[0])*/
-    }
-    
-    func test_execute_onRequestMoreCharacters_whenNoMorePages() async {
-        let expected = CharacterEntityFactory.makeListEntity()
-        await useCase.setMockResponse(expected)
-        
-        /*XCTAssertFalse(sut.isError)
-        XCTAssertTrue(sut.characters.isEmpty)
-        
-        await sut.onRefresh()
-        
-        XCTAssertFalse(sut.isError)
-        XCTAssertFalse(sut.characters.isEmpty)
-        XCTAssert(sut.characters.count == 1)
-        CharacterEntityAssert.assertCharacter(sut.characters[0], equals: expected.results[0])
-        
-        await sut.onRequestMoreCharacters()
-        
-        XCTAssertFalse(sut.isError)
-        XCTAssertFalse(sut.characters.isEmpty)
-        XCTAssert(sut.characters.count == 1)
-        CharacterEntityAssert.assertCharacter(sut.characters[0], equals: expected.results[0])*/
-    }
-    
-    func test_execute_onRequestMoreCharacters_whenUseCaseFails() async {
-        let expected = CharacterEntityFactory.makeListTwoPagesEntity()
-        await useCase.setMockResponse(expected)
-        
-        /*XCTAssertFalse(sut.isError)
-        XCTAssertTrue(sut.characters.isEmpty)
-        
-        await sut.onRefresh()
-        
-        XCTAssertFalse(sut.isError)
-        XCTAssertFalse(sut.characters.isEmpty)
-        XCTAssert(sut.characters.count == 1)
-        CharacterEntityAssert.assertCharacter(sut.characters[0], equals: expected.results[0])
-        
-        await useCase.setMockError(UseCaseError.generic)
-        await sut.onRequestMoreCharacters()
-        
-        XCTAssertTrue(sut.isError)
-        XCTAssertFalse(sut.characters.isEmpty)
-        XCTAssert(sut.characters.count == 1)
-        CharacterEntityAssert.assertCharacter(sut.characters[0], equals: expected.results[0])*/
+    private func waitUntil(description: String, check condition: @escaping () -> Bool) -> XCTestExpectation {
+        let expectation = expectation(description: description)
+
+        Task {
+            while true {
+                if condition() { break }
+                try? await Task.sleep(nanoseconds: 5_000_000)
+            }
+            
+            expectation.fulfill()
+        }
+
+        return expectation
     }
 }
