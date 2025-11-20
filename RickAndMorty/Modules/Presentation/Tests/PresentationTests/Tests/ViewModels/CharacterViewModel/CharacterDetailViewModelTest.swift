@@ -25,7 +25,7 @@ final class CharacterDetailViewModelTest: XCTestCase {
         Container.shared.manager.push()
         Container.shared.getCharacterUseCase.register { mock }
         
-        sut = CharacterDetailViewModel(router: nil, characterId: 1)
+        sut = CharacterDetailViewModel(characterId: 1, router: nil)
     }
     
     override func tearDown() async throws {
@@ -38,27 +38,60 @@ final class CharacterDetailViewModelTest: XCTestCase {
     
     func test_execute_onAppear_whenUseCaseSucceeds() async {
         let expected = CharacterEntityFactory.makeCharacterEntity()
+        let testExpectation = testExpectationScrollRepresentable()
         await useCase.setMockResponse(expected)
         
-        XCTAssertFalse(sut.isError)
-        XCTAssertNil(sut.character)
+        XCTAssertNotNil(sut.module as? any LoadingRepresentable)
+        let loading = sut.module as! any LoadingRepresentable
         
-        await sut.onAppear()
+        loading.onAppear()
+        await fulfillment(of: [testExpectation], timeout: 1)
         
-        XCTAssertFalse(sut.isError)
-        XCTAssertNotNil(sut.character)
-        CharacterEntityAssert.assertCharacter(sut.character!, equals: expected)
+        XCTAssertNotNil(sut.module as? any ScrollRepresentable)
+        let scroll = sut.module as! any ScrollRepresentable
+        XCTAssertFalse(scroll.scrollDataSource.modules.isEmpty)
     }
     
     func test_execute_onAppear_whenUseCaseFails() async {
+        let testExpectation = testExpectationErrorRepresentable()
         await useCase.setMockError(UseCaseError.generic)
         
-        XCTAssertFalse(sut.isError)
-        XCTAssertNil(sut.character)
+        XCTAssertNotNil(sut.module as? any LoadingRepresentable)
+        let loading = sut.module as! any LoadingRepresentable
         
-        await sut.onAppear()
+        loading.onAppear()
+        await fulfillment(of: [testExpectation], timeout: 1)
         
-        XCTAssertTrue(sut.isError)
-        XCTAssertNil(sut.character)
+        XCTAssertNotNil(sut.module as? any ErrorRepresentable)
+    }
+}
+
+private extension CharacterDetailViewModelTest {
+    
+    func testExpectationScrollRepresentable() -> XCTestExpectation {
+        waitUntil(description: "testExpectationScrollRepresentable") {
+            self.sut.module is any ScrollRepresentable
+        }
+    }
+    
+    func testExpectationErrorRepresentable() -> XCTestExpectation {
+        waitUntil(description: "testExpectationErrorRepresentable") {
+            self.sut.module is any ErrorRepresentable
+        }
+    }
+    
+    private func waitUntil(description: String, check condition: @escaping () -> Bool) -> XCTestExpectation {
+        let expectation = expectation(description: description)
+
+        Task {
+            while true {
+                if condition() { break }
+                try? await Task.sleep(nanoseconds: 5_000_000)
+            }
+            
+            expectation.fulfill()
+        }
+
+        return expectation
     }
 }

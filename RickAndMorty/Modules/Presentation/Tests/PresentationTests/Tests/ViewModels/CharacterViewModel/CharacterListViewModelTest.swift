@@ -39,7 +39,7 @@ final class CharacterListViewModelTest: XCTestCase {
     
     func test_onRefresh_waitsForModuleUpdate() async {
         let expected = CharacterEntityFactory.makeListEntity()
-        let testExpectation = testExpectationCellsNotEmptyModule()
+        let testExpectation = testExpectationListRepresentableNotEmptyModule()
         await useCase.setMockResponse(expected)
         
         XCTAssertNotNil(sut.module as? any ListRepresentable)
@@ -59,7 +59,7 @@ final class CharacterListViewModelTest: XCTestCase {
     
     
     func test_execute_onRefresh_whenUseCaseFails() async {
-        let testExpectation = testExpectationErrorModule()
+        let testExpectation = testExpectationErrorRepresentable()
         await useCase.setMockError(UseCaseError.generic)
         
         XCTAssertNotNil(sut.module as? any ListRepresentable)
@@ -75,18 +75,17 @@ final class CharacterListViewModelTest: XCTestCase {
 
 private extension CharacterListViewModelTest {
     
-    func testExpectationCellsNotEmptyModule() -> XCTestExpectation {
-        waitUntil(description: "testExpectationCellsNotEmptyModule") {
+    func testExpectationListRepresentableNotEmptyModule() -> XCTestExpectation {
+        waitUntil(description: "testExpectationListRepresentableNotEmptyModule") {
             if let list = self.sut.module as? any ListRepresentable {
                 return !list.listDataSource.cells.isEmpty
             }
             return false
         }
     }
-
     
-    func testExpectationErrorModule() -> XCTestExpectation {
-        waitUntil(description: "testExpectationErrorModule") {
+    func testExpectationErrorRepresentable() -> XCTestExpectation {
+        waitUntil(description: "testExpectationErrorRepresentable") {
             self.sut.module is any ErrorRepresentable
         }
     }
