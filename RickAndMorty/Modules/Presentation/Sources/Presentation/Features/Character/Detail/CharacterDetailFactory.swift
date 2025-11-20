@@ -1,13 +1,13 @@
 import Combine
 import Domain
 
-final class CharacterListFactory {
+final class CharacterDetailFactory {
     static func makeEmptyModule() -> any EmptyModule {
         EmptyModel()
     }
     
-    static func makeListModule() -> any ListModule & ListInfiniteModule & SearchModule {
-        ListInfiniteSearchModel(searchModel: ListSearchModel(listModel: ListModel(cells: [])))
+    static func makeScrollModule(modules: [any Module] = []) -> any ScrollModule {
+        ScrollModel(modules: modules)
     }
     
     static func makeErrorModule(error: String = "") -> any ErrorModule {
