@@ -2,6 +2,7 @@ import Combine
 import Domain
 
 final class CharacterListFactory {
+    
     static func makeEmptyModule() -> any EmptyModule {
         EmptyModel()
     }
@@ -16,6 +17,7 @@ final class CharacterListFactory {
 }
 
 extension CharacterListFactory {
+    
     static func makeCellLoadingModule() -> any CellLoadingModule {
         CellLoadingModel()
     }

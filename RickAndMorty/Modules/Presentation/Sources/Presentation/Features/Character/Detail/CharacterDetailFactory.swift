@@ -2,6 +2,7 @@ import Combine
 import Domain
 
 final class CharacterDetailFactory {
+    
     static func makeEmptyModule() -> any EmptyModule {
         EmptyModel()
     }
